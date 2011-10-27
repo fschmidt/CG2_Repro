@@ -1,0 +1,14 @@
+INDEX VERSION 1.126+C:\Users\Frank\Documents\Studium Medieninformatik\FSIV\EclipseWS\CGII_Indigo_WS\CG2_Repro\.metadata\.plugins\org.eclipse.jdt.core
+3730526690.index
+1789169078.index
+4251467834.index
+3270002986.index
+1129842235.index
+960858732.index
+3000053649.index
+2877109961.index
+3277441100.index
+1375695878.index
+3796406441.index
+3585733931.index
+3733614718.index
