@@ -3,42 +3,50 @@ package cg2.raytracer;
 import cg2.vecmath.Vector;
 
 public class Camera {
-  private Vector position;
-  private Vector gazeDirection;
-  private float oeffnungswinkel;
+	private final Vector position;
+	private final Vector gazeDirection;
+	private final float oeffnungswinkel;
+	private final float width;
+	private final float height;
 
-  public Camera(Vector position, Vector gazeDirection, float oeffnungswinkel) {
-    super();
-    this.position = position;
-    this.gazeDirection = gazeDirection;
-    if (oeffnungswinkel <= 0.0f || oeffnungswinkel >= 180.0f) {
-      throw new IllegalArgumentException("oeffnungswinkel falsch");
-    }
-    this.oeffnungswinkel = oeffnungswinkel;
-  }
+	public Camera(float oeffnungswinkel, float width, float height) {
+		this(new Vector(0.0f, 0.0f, 0.0f), new Vector(0.0f, 0.0f, -1.0f),
+				oeffnungswinkel, width, height);
+	}
 
-  public Vector getPosition() {
-    return position;
-  }
+	public Camera(Vector position, Vector gazeDirection, float oeffnungswinkel,
+			float width, float height) {
+		super();
+		this.position = position;
+		this.gazeDirection = gazeDirection;
+		if (oeffnungswinkel <= 0.0f || oeffnungswinkel >= 180.0f) {
+			throw new IllegalArgumentException("oeffnungswinkel falsch");
+		}
+		this.oeffnungswinkel = oeffnungswinkel;
+		this.width = width;
+		this.height = height;
+	}
 
-  public void setPosition(Vector position) {
-    this.position = position;
-  }
+	public Vector getPosition() {
+		return position;
+	}
 
-  public Vector getGazeDirection() {
-    return gazeDirection;
-  }
+	public Vector getGazeDirection() {
+		return gazeDirection;
+	}
 
-  public void setGazeDirection(Vector gazeDirection) {
-    this.gazeDirection = gazeDirection;
-  }
+	public float getOeffnungswinkel() {
+		return oeffnungswinkel;
+	}
 
-  public float getOeffnungswinkel() {
-    return oeffnungswinkel;
-  }
-
-  public void setOeffnungswinkel(float oeffnungswinkel) {
-    this.oeffnungswinkel = oeffnungswinkel;
-  }
-
+	public Ray getRay(int i, int j) {
+//		System.out.println("i: " + i);
+//		System.out.println("j: " + j);
+//		System.out.println((float) (width / (2.0 * Math
+//				.tan(oeffnungswinkel / 2.0))));
+		float za = (float) (width / (2.0 * Math.tan(oeffnungswinkel / 2.0)));
+		float xi = -(width / 2) + (i + 0.5f);
+		float yj = -(height / 2) + (j + 0.5f);
+		return new Ray(new Vector(xi, yj, -za), position);
+	}
 }

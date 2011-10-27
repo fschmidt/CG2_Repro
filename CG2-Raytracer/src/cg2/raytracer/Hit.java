@@ -16,7 +16,7 @@ public class Hit implements Comparable<Hit> {
 		return t;
 	}
 	
-	public Color getC() {
+	public Color getColor() {
 		return c;
 	}
 
