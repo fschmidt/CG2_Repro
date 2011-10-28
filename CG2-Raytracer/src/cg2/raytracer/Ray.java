@@ -4,7 +4,7 @@ import cg2.vecmath.Vector;
 
 public class Ray {
 
-	private final Vector direction;
+	private final Vector gaze;
 	private final Vector origin;
 	
 	public static float minX = Float.MAX_VALUE; 
@@ -15,28 +15,29 @@ public class Ray {
 	public static float maxZ = Float.MIN_VALUE; 
 	
 
-	public Ray(Vector direction, Vector origin) {
+	public Ray(Vector gaze, Vector origin) {
 		super();
-//		System.out.println(direction);
 		
+		this.gaze = gaze.normalize();
+		minX = Math.min(minX, this.gaze.x); 
+		minY = Math.min(minY, this.gaze.y); 
+		minZ = Math.min(minZ, this.gaze.z); 
+		maxX = Math.max(maxX, this.gaze.x); 
+		maxY = Math.max(maxY, this.gaze.y); 
+		maxZ = Math.max(maxZ, this.gaze.z); 
 		
-		
-		this.direction = direction.normalize();
-		minX = Math.min(minX, this.direction.x); 
-		minY = Math.min(minY, this.direction.y); 
-		minZ = Math.min(minZ, this.direction.z); 
-		maxX = Math.max(maxX, this.direction.x); 
-		maxY = Math.max(maxY, this.direction.y); 
-		maxZ = Math.max(maxZ, this.direction.z); 
-		
-		if(Math.abs( this.direction.z ) < 1)
-			System.out.println(this.direction.x + " " + this.direction.y); 
+		if(Math.abs( this.gaze.z ) < 1)
+			System.out.println(this.gaze.x + " " + this.gaze.y); 
 		
 		this.origin = origin;
 	}
 
-	public Vector getDirection() {
-		return direction;
+	public Ray(Vector gaze) {
+		this(gaze, Vector.Zero); 
+	}
+
+	public Vector getGaze() {
+		return gaze;
 	}
 
 	public Vector getOrigin() {
@@ -45,7 +46,7 @@ public class Ray {
 
 	@Override
 	public String toString() {
-		return "Ray [direction=" + direction + ", origin=" + origin + "]";
+		return "Ray [direction=" + gaze + ", origin=" + origin + "]";
 	}
 
 }

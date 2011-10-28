@@ -3,7 +3,7 @@ package cg2.raytracer;
 import cg2.vecmath.Color;
 import cg2.vecmath.Vector;
 
-public class Sphere implements IShape {
+public class Sphere implements IShapeColored {
 	private final Vector origin;
 	private final float radius;
 	private final Color color; 
@@ -32,7 +32,7 @@ public class Sphere implements IShape {
 		
 		Vector x0 = ray.getOrigin().sub(this.origin);
 		
-		Vector d = ray.getDirection();
+		Vector d = ray.getGaze();
 		
 		float r = radius; 
 		float x0DotD = x0.dot(d);

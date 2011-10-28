@@ -15,6 +15,7 @@ public final class Vector implements Comparable<Vector> {
   public static Vector X = new Vector(1, 0, 0);
   public static Vector Y = new Vector(0, 1, 0);
   public static Vector Z = new Vector(0, 0, 1);
+  public static Vector Zero = new Vector(0, 0, 0); 
 
   public final float x, y, z;
 

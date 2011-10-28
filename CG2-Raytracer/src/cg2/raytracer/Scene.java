@@ -3,10 +3,10 @@ package cg2.raytracer;
 import java.util.List;
 
 public class Scene {
-	private List<IShape> objects;
+	private List<IShapeColored> objects;
 	private final Camera camera;
 
-	public Scene(final List<IShape> objects, final Camera camera) {
+	public Scene(final List<IShapeColored> objects, final Camera camera) {
 		super();
 		this.objects = objects;
 		this.camera = camera;

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cg2.raytracer.Camera;
-import cg2.raytracer.IShape;
+import cg2.raytracer.IShapeColored;
 import cg2.raytracer.Ray;
 import cg2.raytracer.Scene;
 import cg2.raytracer.Sphere;
@@ -18,7 +18,7 @@ public class Warmup {
 
 		String filename = path + "/" + "raytracer.png";
 
-		List<IShape> objects = new ArrayList<IShape>();
+		List<IShapeColored> objects = new ArrayList<IShapeColored>();
 		
 		//Sphere sphereA = new Sphere(new Vector(0.0f, 0.0f, 400f), 100000.0f, new Color(255,0,0));
 		Sphere sphereB = new Sphere(new Vector(0.0f, 0.0f, -1000f), 9.0f, new Color(0,0,255));

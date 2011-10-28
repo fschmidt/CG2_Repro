@@ -3,7 +3,7 @@ package cg2.raytracer;
 import cg2.vecmath.Color;
 import cg2.vecmath.Vector;
 
-public class Plane implements IShape {
+public class Plane implements IShapeColored {
 	private final Vector x0; 
 	private final Vector n;
 	private final Color color; 
@@ -29,8 +29,6 @@ public class Plane implements IShape {
 
 	@Override
 	public Hit getHit(Ray ray) {
-		Vector v = ray.getDirection().cross(n);
-		
 		throw new UnsupportedOperationException(); 
 	}
 }
