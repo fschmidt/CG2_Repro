@@ -19,15 +19,15 @@ public class Ray {
 		super();
 		
 		this.gaze = gaze.normalize();
-		minX = Math.min(minX, this.gaze.x); 
-		minY = Math.min(minY, this.gaze.y); 
-		minZ = Math.min(minZ, this.gaze.z); 
-		maxX = Math.max(maxX, this.gaze.x); 
-		maxY = Math.max(maxY, this.gaze.y); 
-		maxZ = Math.max(maxZ, this.gaze.z); 
-		
-		if(Math.abs( this.gaze.z ) < 1)
-			System.out.println(this.gaze.x + " " + this.gaze.y); 
+//		minX = Math.min(minX, this.gaze.x); 
+//		minY = Math.min(minY, this.gaze.y); 
+//		minZ = Math.min(minZ, this.gaze.z); 
+//		maxX = Math.max(maxX, this.gaze.x); 
+//		maxY = Math.max(maxY, this.gaze.y); 
+//		maxZ = Math.max(maxZ, this.gaze.z); 
+//		
+//		if(Math.abs( this.gaze.z ) < 1)
+//			System.out.println(this.gaze.x + " " + this.gaze.y); 
 		
 		this.origin = origin;
 	}

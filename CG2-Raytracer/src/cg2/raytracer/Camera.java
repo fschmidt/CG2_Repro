@@ -22,9 +22,9 @@ public class Camera {
 //		System.out.println("j: " + j);
 //		System.out.println((float) (width / (2.0 * Math
 //				.tan(oeffnungswinkel / 2.0))));
-		float za = (float) (width / (2.0 * Math.tan(angle / 2.0)));
+		float za = (float) (width / (2.0 * Math.tan(angle*Math.PI/180.0f / 2.0)));
 		float xi = -(width / 2) + (i + 0.5f);
 		float yj = -(height / 2) + (j + 0.5f);
-		return new Ray(new Vector(xi, yj, -za));
+		return new Ray(new Vector(xi, yj, za));
 	}
 }
