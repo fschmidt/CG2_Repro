@@ -24,17 +24,21 @@ public class Scene {
 		Hit nearest = null;
 
 		for (IShape shape : objects) {
-			if (nearest == null)
+			if (nearest == null) {
 				nearest = shape.getHit(ray);
-			else {
+			} else {
 				Hit current = shape.getHit(ray);
 				if (current != null && current.compareTo(nearest) < 0) {
-					nearest = current;
-					//System.out.println(nearest);
+					if (current.getT() > 0) {
+						nearest = current; 
+					}
 				}
 			}
 		}
 
-		return nearest;
+		if (nearest != null && nearest.getT() > 0)
+			return nearest;
+
+		return null;
 	}
 }

@@ -3,6 +3,7 @@ package cg2.raytracerApp;
 import java.util.ArrayList;
 import java.util.List;
 
+import cg2.raytracer.AxisAllignedBox;
 import cg2.raytracer.Camera;
 import cg2.raytracer.IShapeColored;
 import cg2.raytracer.Plane;
@@ -39,7 +40,7 @@ public class Warmup {
 
 		// camera requires specification of field of view (X)
 
-		Camera camera = new Camera(90f, 120, 90, nx, ny);
+		Camera camera = new Camera(90f, 12, 9, nx, ny);
 
 		// instantiate scene and contained shapes
 
@@ -59,14 +60,14 @@ public class Warmup {
 
 		// plane requires any point, a normal, and a color
 
-		// Plane groundPlane = new Plane( new Vector(0f,-1.5f,0f), new
-		// Vector(0f,1f,0f), dirt);
-		//
-		// objects.add(groundPlane);
+		Plane groundPlane = new Plane(new Vector(0f, -1.5f, 0f), new Vector(0f,
+				1f, 0f), dirt);
+
+		objects.add(groundPlane);
 
 		// sphere requires specification of center, radius, and color
 
-		Sphere redSphere = new Sphere(new Vector(1.0f, 0.0f, -5.0f), 1000.3f, red);
+		Sphere redSphere = new Sphere(new Vector(1.0f, 0.0f, -5.0f), 1.3f, red);
 
 		Sphere blueSphere = new Sphere(new Vector(3.5f, 0.0f, -7.0f), 1.0f,
 				blue);
@@ -74,12 +75,24 @@ public class Warmup {
 		Sphere greenSphere = new Sphere(new Vector(-1.0f, 0.0f, -4.0f), 1.5f,
 				green);
 
+		Sphere middleSphere = new Sphere(new Vector(0f, 0f, -5.0f), 4f, red);
+
 		objects.add(redSphere);
 
 		objects.add(blueSphere);
 
 		objects.add(greenSphere);
 
+		//objects.add(middleSphere);
+		
+		AxisAllignedBox box = new AxisAllignedBox(new Vector(-4.1f, -5.1f, -10.1f), new Vector(3.1f, 5.1f, -0.1f), yellow); 
+		
+		objects.add(box);
+
+		AxisAllignedBox schirmacherBox = new AxisAllignedBox(new Vector(2,1,-12), new Vector(6, 5, -10), yellow);  
+		
+		objects.add(schirmacherBox); 
+		
 		new ImageGenerator(new Raytracer(scene), nx, ny, filename, "png");
 		ImageGenerator.showImage(filename);
 	}

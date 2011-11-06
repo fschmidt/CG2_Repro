@@ -25,9 +25,10 @@ public class Camera {
 	}
 
 	public Ray getRay(int i, int j) {
-		float za = (float) (virtualWidth / (2.0 * Math.tan(angle*Math.PI/180.0f / 2.0)));
+		float za = (float) (virtualWidth / (2.0 * Math.tan((angle*(Math.PI/180.0f)) / 2.0)));
 		float xi = -(virtualWidth / 2) + (i + 0.5f) * (virtualWidth / physicalWidth) ;
 		float yj = -(virtualHeight / 2) + (j + 0.5f) * (virtualHeight / physicalHeight);
-		return new Ray(new Vector(xi, yj, za));
+		//System.out.printf("%f, %f, %f%n", xi, yj, za);
+		return new Ray(new Vector(xi, yj, -za));
 	}
 }

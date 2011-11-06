@@ -29,14 +29,18 @@ public class Sphere implements IShapeColored {
 
 	@Override
 	public Hit getHit(Ray ray) {
+		if(ray.getGaze().x>0 && ray.getGaze().x < 0.001 && ray.getGaze().y >0 && ray.getGaze().y < 0.001 && this.color.g == 1) {
+			int foo = 0; 
+		}
 		
-		Vector x0 = ray.getOrigin().sub(this.origin);
+		Vector x0 = ray.getOrigin().sub(this.origin); // L
 		
-		Vector d = ray.getGaze();
+		Vector d = ray.getGaze(); // V 
 		
 		float r = radius; 
-		float x0DotD = x0.dot(d);
+		float x0DotD = x0.dot(d); // < 0 : Kamera in der Kugel oder mittelpunkt hinter Kamera. 
 		float rootResult = x0DotD * x0DotD - 2 * ( x0.dot(x0) - r*r ); 
+		
 		
 		if(rootResult < 0) 
 			return null; 
@@ -45,12 +49,21 @@ public class Sphere implements IShapeColored {
 			return new Hit(-x0DotD, this.getColor());  
 		
 		float sqrt = (float)Math.sqrt(rootResult);
-		Hit a = new Hit( -x0DotD + sqrt, getColor() ); 
-		Hit b = new Hit( -x0DotD - sqrt, getColor() );
+		float t1 = -x0DotD + sqrt;
+		float t2 = -x0DotD - sqrt;
 		
-		System.out.println("at: "+a.getT());
-		System.out.println("bt: "+b.getT());
+		Hit a = new Hit( t1, getColor() ); 
+		Hit b = new Hit( t2, getColor() );
 		
-		return a.compareTo(b) < 0 ? a : b; 
+		if(t1 > 0 && t2 > 0)
+			return t1 < t2 ? a : b;
+		
+		if(t1 < 0 && t2 > 0)
+			return b;
+		
+		if(t1 > 0 && t2 < 0)
+			return a;
+		
+		return null; 
 	}
 }
