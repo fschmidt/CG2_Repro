@@ -28,8 +28,10 @@ public class Scene {
 				nearest = shape.getHit(ray);
 			else {
 				Hit current = shape.getHit(ray);
-				if (current.compareTo(nearest) < 0)
+				if (current != null && current.compareTo(nearest) < 0) {
 					nearest = current;
+					//System.out.println(nearest);
+				}
 			}
 		}
 

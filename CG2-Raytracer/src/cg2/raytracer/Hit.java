@@ -21,6 +21,11 @@ public class Hit implements Comparable<Hit> {
 	}
 
 	@Override
+	public String toString() {
+		return "Hit [t=" + t + ", c=" + c + "]";
+	}
+
+	@Override
 	public int compareTo(Hit o) {
 		if(o == null) 
 			throw new IllegalArgumentException(); 
