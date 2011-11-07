@@ -60,7 +60,7 @@ public class Warmup {
 
 		// plane requires any point, a normal, and a color
 
-		Plane groundPlane = new Plane(new Vector(0f, -1.5f, 0f), new Vector(0f,
+		Plane groundPlane = new Plane(new Vector(0f, -1.0f, 0f), new Vector(0f,
 				1f, 0f), dirt);
 
 		objects.add(groundPlane);
@@ -85,13 +85,13 @@ public class Warmup {
 
 		//objects.add(middleSphere);
 		
-		AxisAllignedBox box = new AxisAllignedBox(new Vector(-4.1f, -5.1f, -10.1f), new Vector(3.1f, 5.1f, -0.1f), yellow); 
+		AxisAllignedBox box = new AxisAllignedBox(new Vector(2,1,-12), new Vector(6, 7, -10), red);  
 		
 		objects.add(box);
 
 		AxisAllignedBox schirmacherBox = new AxisAllignedBox(new Vector(2,1,-12), new Vector(6, 5, -10), yellow);  
 		
-		objects.add(schirmacherBox); 
+		//objects.add(schirmacherBox); 
 		
 		new ImageGenerator(new Raytracer(scene), nx, ny, filename, "png");
 		ImageGenerator.showImage(filename);

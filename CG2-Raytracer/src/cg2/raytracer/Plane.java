@@ -40,9 +40,11 @@ public class Plane implements IShapeColored {
 		if (t < 0)
 			return null;
 
-		if (((int) (t)) % 2 == 0)
-			return new Hit(t, color);
-		else
-			return new Hit(t, new Color(1, 1, 1));
+		return new Hit(t, color);
+	}
+
+	@Override
+	public String toString() {
+		return "Plane [x=" + x + ", n=" + n + ", color=" + color + "]";
 	}
 }
