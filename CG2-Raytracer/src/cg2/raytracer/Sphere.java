@@ -6,7 +6,7 @@ import cg2.vecmath.Vector;
 public class Sphere implements IShapeColored {
 	private final Vector origin;
 	private final float radius;
-	private final Color color; 
+	private final Color color;
 
 	public Sphere(Vector origin, float radius, Color color) {
 		super();
@@ -14,7 +14,7 @@ public class Sphere implements IShapeColored {
 		this.radius = radius;
 		this.color = color;
 	}
-	 
+
 	public Color getColor() {
 		return color;
 	}
@@ -29,41 +29,40 @@ public class Sphere implements IShapeColored {
 
 	@Override
 	public Hit getHit(Ray ray) {
-		if(ray.getGaze().x>0 && ray.getGaze().x < 0.001 && ray.getGaze().y >0 && ray.getGaze().y < 0.001 && this.color.g == 1) {
-			int foo = 0; 
+		final float r = radius;
+		final Vector x0 = ray.getOrigin(); // Ursprung des Rays
+		final Vector d = ray.getGaze().normalize(); // Gaze Direction
+		final Vector c = this.origin; // Ursprung der SphŠre
+
+		final Vector x0subC = x0.sub(c);
+
+		float q = x0subC.dot(x0subC) - r * r;
+		float p = 2f * d.dot(x0subC);
+		float pHalf = p / 2;
+		float underSqrt = pHalf * pHalf - q;
+
+		if (underSqrt < 0)
+			return null;
+
+		float minusPHalf = -pHalf;
+
+		if (underSqrt == 0) {
+			return new Hit(minusPHalf, color);
 		}
-		
-		Vector x0 = ray.getOrigin().sub(this.origin); // L
-		
-		Vector d = ray.getGaze(); // V 
-		
-		float r = radius; 
-		float x0DotD = x0.dot(d); // < 0 : Kamera in der Kugel oder mittelpunkt hinter Kamera. 
-		float rootResult = x0DotD * x0DotD - 2 * ( x0.dot(x0) - r*r ); 
-		
-		
-		if(rootResult < 0) 
-			return null; 
-		
-		if(rootResult == 0)
-			return new Hit(-x0DotD, this.getColor());  
-		
-		float sqrt = (float)Math.sqrt(rootResult);
-		float t1 = -x0DotD + sqrt;
-		float t2 = -x0DotD - sqrt;
-		
-		Hit a = new Hit( t1, getColor() ); 
-		Hit b = new Hit( t2, getColor() );
-		
-		if(t1 > 0 && t2 > 0)
-			return t1 < t2 ? a : b;
-		
-		if(t1 < 0 && t2 > 0)
-			return b;
-		
-		if(t1 > 0 && t2 < 0)
-			return a;
-		
-		return null; 
+
+		float sqrt = (float) Math.sqrt(underSqrt);
+		float t1 = minusPHalf + sqrt;
+		float t2 = minusPHalf - sqrt;
+
+		if (t1 > 0 && t2 > 0)
+			return t1 > t2 ? new Hit(t2, color) : new Hit(t1, color);
+
+		if (t1 <= 0 && t2 > 0)
+			return new Hit(t2, color);
+
+		if (t1 > 0 && t2 <= 0)
+			return new Hit(t1, color);
+
+		return null;
 	}
 }
