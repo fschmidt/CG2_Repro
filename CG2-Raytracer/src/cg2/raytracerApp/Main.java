@@ -54,7 +54,7 @@ public class Main {
 		Sphere greenSphere = new Sphere(new Vector(-1.0f, 0.0f, -4.0f), 1.5f,
 				green);
 		Sphere sphereFoo = new Sphere(new Vector(9.0f, -1.0f, -11.5f), 2.5f,
-				red);
+				red.darken(0.4f));
 
 		// an axis aligned box requires only two points
 		AxisAllignedBox box = new AxisAllignedBox(new Vector(2, 1, -12),
@@ -65,7 +65,7 @@ public class Main {
 				-7f, 5f, -10f), new Vector(-8f, 7f, -10f), green);
 
 		Triangle triangle2 = new Triangle(new Vector(-7f, 5f, -10f),
-				new Vector(-5f, 5f, -10f), new Vector(-6f, 7f, -10f), blue);
+				new Vector(-5f, 5f, -10f), new Vector(-6f, 7f, -10f), blue.darken(0.8f));
 
 		objects.add(groundPlane);
 		objects.add(rightPlane);
