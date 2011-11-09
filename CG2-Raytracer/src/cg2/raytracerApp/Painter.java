@@ -7,18 +7,18 @@ import cg2.vecmath.Color;
  */
 public interface Painter {
 
-  /**
-   * Override to determine the pixel color for one pixel of the image.
-   * 
-   * @param x
-   *          The X-coordinate of the pixel.
-   * @param y
-   *          The Y-Coordinate of the pixel.
-   * @param width
-   *          The image width in pixels.
-   * @param height
-   *          The image height in pixels.
-   * @return The pixel color
-   */
-  public Color pixelColorAt(int x, int y, int width, int height);
+	/**
+	 * Override to determine the pixel color for one pixel of the image.
+	 * 
+	 * @param x
+	 *            The X-coordinate of the pixel.
+	 * @param y
+	 *            The Y-Coordinate of the pixel.
+	 * @param width
+	 *            The image width in pixels.
+	 * @param height
+	 *            The image height in pixels.
+	 * @return The pixel color
+	 */
+	public Color pixelColorAt(int x, int y, int width, int height);
 }
