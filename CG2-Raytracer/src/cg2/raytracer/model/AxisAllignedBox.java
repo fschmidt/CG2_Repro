@@ -1,18 +1,24 @@
 package cg2.raytracer.model;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
-import cg2.raytracer.Hit;
+import cg2.raytracer.HitDistance;
+import cg2.raytracer.IHitDistance;
 import cg2.raytracer.Ray;
-import cg2.vecmath.Color;
 import cg2.vecmath.Vector;
 
-public class AxisAllignedBox implements IShapeColored {
+public class AxisAllignedBox implements IShape {
 
-	private final Vector pMin;
-	private final Vector pMax;
-	private final Color c;
+	protected final Vector pMin;
+	protected final Vector pMax;
+
+	public AxisAllignedBox(Vector p, Vector q) {
+		super(); 
+		
+		this.pMin = p; 
+		this.pMax = q; 
+	}
 
 	public Vector getPMin() {
 		return pMin;
@@ -22,23 +28,8 @@ public class AxisAllignedBox implements IShapeColored {
 		return pMax;
 	}
 
-	public Color getColor() {
-		return c;
-	}
-
-	public AxisAllignedBox(Vector p, Vector q, Color c) {
-		super();
-		this.pMin = p;
-		this.pMax = q;
-		this.c = c;
-
-		if (p.x > q.x || p.y > q.y || p.z > q.z) {
-			throw new IllegalArgumentException();
-		}
-	}
-
 	@Override
-	public Hit getHit(Ray ray) {
+	public IHitDistance getHit(Ray ray) {
 		Plane p1 = new Plane(pMax, Vector.X, null);
 		Plane p2 = new Plane(pMax, Vector.Y, null);
 		Plane p3 = new Plane(pMax, Vector.Z, null);
@@ -46,11 +37,11 @@ public class AxisAllignedBox implements IShapeColored {
 		Plane p5 = new Plane(pMin, Vector.Y.mult(-1f), null);
 		Plane p6 = new Plane(pMin, Vector.Z.mult(-1f), null);
 		float epsilon = 0.0002f;
-
+	
 		Plane[] planes = new Plane[] { p6, p5, p4,p3,p2,p1};
-
+	
 		List<Plane> planesWhichPointToMe = new ArrayList<Plane>();
-
+	
 		for (Plane plane : planes) {
 			Vector ni = plane.getN();
 			Vector pi = plane.getX();
@@ -60,11 +51,11 @@ public class AxisAllignedBox implements IShapeColored {
 				planesWhichPointToMe.add(plane);
 			}
 		}
-
+	
 		float tMax = Float.MIN_VALUE;
-
+	
 		for (Plane plane : planesWhichPointToMe) {
-			Hit hit = plane.getHit(ray);
+			IHitDistance hit = plane.getHit(ray);
 			
 			if (hit != null) {
 				float t = hit.getT();
@@ -73,16 +64,16 @@ public class AxisAllignedBox implements IShapeColored {
 				}
 			}
 		}
-
+	
 		Vector d = ray.getOrigin().add(ray.getGaze().mult(tMax));
 		
 		if (d.x >= pMin.x - epsilon && d.y >= pMin.y - epsilon
 				&& d.z >= pMin.z - epsilon && d.x <= pMax.x + epsilon
 				&& d.y <= pMax.y + epsilon && d.z <= pMax.z + epsilon) {
-			return new Hit(tMax, c);
+			return new HitDistance(tMax);
 		} else {
 			return null;
 		}
-
+	
 	}
 }

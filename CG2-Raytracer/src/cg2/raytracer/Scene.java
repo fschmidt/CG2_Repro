@@ -2,7 +2,6 @@ package cg2.raytracer;
 
 import java.util.List;
 
-import cg2.raytracer.model.IShape;
 import cg2.raytracer.model.IShapeColored;
 
 /**
@@ -38,14 +37,14 @@ public class Scene {
 	 * @param ray The ray to intersect the scenes objects with
 	 * @return The Hit Object of the nearest Shape hit or null if no object was hit.
 	 */
-	public Hit intersect(Ray ray) {
-		Hit nearest = null;
+	public IHitColoredDistance intersect(Ray ray) {
+		IHitColoredDistance nearest = null;
 
-		for (IShape shape : objects) {
+		for (IShapeColored shape : objects) {
 			if (nearest == null) {
 				nearest = shape.getHit(ray);
 			} else {
-				Hit current = shape.getHit(ray);
+				IHitColoredDistance current = shape.getHit(ray);
 				if (current != null && current.compareTo(nearest) < 0) {
 					if (current.getT() > 0) {
 						nearest = current;

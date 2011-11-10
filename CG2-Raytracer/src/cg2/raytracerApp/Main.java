@@ -5,7 +5,7 @@ import java.util.List;
 
 import cg2.raytracer.Camera;
 import cg2.raytracer.Scene;
-import cg2.raytracer.model.AxisAllignedBox;
+import cg2.raytracer.model.AxisAllignedBoxColored;
 import cg2.raytracer.model.IShapeColored;
 import cg2.raytracer.model.Plane;
 import cg2.raytracer.model.Sphere;
@@ -57,7 +57,7 @@ public class Main {
 				red.darken(0.4f));
 
 		// an axis aligned box requires only two points
-		AxisAllignedBox box = new AxisAllignedBox(new Vector(2, 1, -12),
+		AxisAllignedBoxColored box = new AxisAllignedBoxColored(new Vector(2, 1, -12),
 				new Vector(6, 5, -10), boxColor);
 
 		// a triangle is defined by 3 points

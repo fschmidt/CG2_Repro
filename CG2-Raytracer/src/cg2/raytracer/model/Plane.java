@@ -1,6 +1,6 @@
 package cg2.raytracer.model;
 
-import cg2.raytracer.Hit;
+import cg2.raytracer.HitColoredDistance;
 import cg2.raytracer.Ray;
 import cg2.vecmath.Color;
 import cg2.vecmath.Vector;
@@ -30,7 +30,7 @@ public class Plane implements IShapeColored {
 	}
 
 	@Override
-	public Hit getHit(Ray ray) {
+	public HitColoredDistance getHit(Ray ray) {
 		float d = n.dot(x);
 		float ndotd = n.dot(ray.getGaze());
 
@@ -42,7 +42,7 @@ public class Plane implements IShapeColored {
 		if (t < 0)
 			return null;
 
-		return new Hit(t, color);
+		return new HitColoredDistance(t, color);
 	}
 
 	@Override

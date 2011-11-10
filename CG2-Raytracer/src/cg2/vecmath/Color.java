@@ -11,7 +11,9 @@ import org.lwjgl.BufferUtils;
  */
 public final class Color implements Comparable<Color> {
 
-	public final float r, g, b;
+	public final float r;
+	public final float g;
+	public final float b;
 
 	/**
 	 * Construct a new color vector and initialize the components.
@@ -136,18 +138,12 @@ public final class Color implements Comparable<Color> {
 	}
 
 	public Color brighten(float s) {
-		float r = this.r * (1 + s);
-		float g = this.g * (1 + s);
-		float b = this.b * (1 + s);
+		return this.modulate(1 + s);
+	}
 
-		return new Color(r, g, b);
-	}
-	
 	public Color darken(float s) {
-		return brighten(s - 1); 
+		return brighten(s - 1);
 	}
-	
-	
 
 	/**
 	 * Convert a floating point component from the interval [0.0, 1.0] to an

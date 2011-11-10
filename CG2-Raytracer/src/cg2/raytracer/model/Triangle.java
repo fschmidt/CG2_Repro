@@ -1,6 +1,6 @@
 package cg2.raytracer.model;
 
-import cg2.raytracer.Hit;
+import cg2.raytracer.HitColoredDistance;
 import cg2.raytracer.Ray;
 import cg2.vecmath.Color;
 import cg2.vecmath.Vector;
@@ -20,7 +20,7 @@ public class Triangle implements IShapeColored {
 	}
 
 	@Override
-	public Hit getHit(Ray ray) {
+	public HitColoredDistance getHit(Ray ray) {
 
 		// calculate the vectors defining the plane of the triangle
 		Vector e1 = p1.sub(p0);
@@ -37,7 +37,7 @@ public class Triangle implements IShapeColored {
 		float u = tvu.y;
 		float v = tvu.z;
 
-		Hit hit = new Hit(t, c);
+		HitColoredDistance hit = new HitColoredDistance(t, c);
 
 		if (u > 0 && v > 0 && u + v < 1.0f) {
 			return hit;
