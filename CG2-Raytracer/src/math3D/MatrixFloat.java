@@ -19,11 +19,11 @@ public class MatrixFloat implements IMatrix<Float> {
 	/**
 	 * Die Anzahl Zeilen
 	 * */
-	final protected int _m;
+	final protected int rows;
 	/**
 	 * Die Anzahl Spalten
 	 * */
-	final protected int _n;
+	final protected int col;
 
 	/**
 	 * Die Fläche (n*m)
@@ -48,8 +48,8 @@ public class MatrixFloat implements IMatrix<Float> {
 	 *            ... , e2n, e31, ... , emn
 	 */
 	public MatrixFloat(final int m, final int n, final float... e) {
-		this._m = m;
-		this._n = n;
+		this.rows = m;
+		this.col = n;
 		this._area = n * m;
 
 		this._member = e;
@@ -61,89 +61,89 @@ public class MatrixFloat implements IMatrix<Float> {
 	}
 
 	public MatrixFloat(final IMatrix<Float> matrix) {
-		this(((MatrixFloat) matrix)._m, ((MatrixFloat) matrix)._n, ((MatrixFloat) matrix)._member);
+		this(((MatrixFloat) matrix).rows, ((MatrixFloat) matrix).col, ((MatrixFloat) matrix)._member);
 	}
 
 	@Override
 	public int getColumns() {
-		return _n;
+		return col;
 	}
 
 	@Override
 	public int getRows() {
-		return _m;
+		return rows;
 	}
 
 	@Override
 	public Float get(final int m, final int n) {
-		if (n < 0 || m < 0 || m >= this._m || n >= this._n)
+		if (n < 0 || m < 0 || m >= this.rows || n >= this.col)
 			throw new IllegalArgumentException("row oder column sind außerhalb des Wertebereiches.");
 
-		return _member[n + m * this._n];
+		return _member[n + m * this.col];
 	}
 
 	@Override
 	public IMatrix<Float> add(final IMatrix<Float> matrix) {
 		checkNull(matrix);
 
-		if (this._m != matrix.getColumns() || this._n != matrix.getRows())
+		if (this.rows != matrix.getColumns() || this.col != matrix.getRows())
 			throw new IllegalArgumentException("Es lassen sich nur Matritzen mit gleicher Abmessung addieren.");
 
 		final float[] result = new float[_area];
 
 		int i = 0;
-		for (int m = 0; m != _m; m++)
-			for (int n = 0; n != _n; n++) {
+		for (int m = 0; m != rows; m++)
+			for (int n = 0; n != col; n++) {
 				result[i] = _member[i] + matrix.get(m, n);
 				i++;
-		}
+			}
 
-		return new MatrixFloat(_m, _n, result);
+		return new MatrixFloat(rows, col, result);
 	}
 
 	@Override
 	public IMatrix<Float> sub(final IMatrix<Float> matrix) {
 		checkNull(matrix);
 
-		if (this._m != matrix.getColumns() || this._n != matrix.getRows())
+		if (this.rows != matrix.getColumns() || this.col != matrix.getRows())
 			throw new IllegalArgumentException("Es lassen sich nur Matritzen mit gleicher Abmessung subtrahieren.");
 
 		final float[] result = new float[_area];
 
 		int i = 0;
-		for (int m = 0; m != _m; m++)
-			for (int n = 0; n != _n; n++) {
+		for (int m = 0; m != rows; m++)
+			for (int n = 0; n != col; n++) {
 				result[i] = _member[i] - matrix.get(m, n);
 				i++;
-		}
+			}
 
-		return new MatrixFloat(_m, _n, result);
+		return new MatrixFloat(rows, col, result);
 	}
 
 	@Override
 	public IMatrix<Float> mult(final IMatrix<Float> matrix) {
 		checkNull(matrix);
 
-		if (this._m != matrix.getRows())
-			throw new IllegalArgumentException(
-					"Matrixmultiplikation geht nur mit Matritzen nach dem Schema m x p * p x n.");
+		if (this.getColumns() != matrix.getRows())
+			throw new IllegalArgumentException("Matrixmultiplikation geht nur mit Matritzen nach dem Schema m x p * p x n.");
 
 		int resultCell = 0;
-		final int newM = this._m;
+		final int newM = this.rows;
 		final int newN = matrix.getColumns();
 
 		final float[] result = new float[newM * newN];
 
-		for (int m = 0; m != newM; m++)
-			for (int n = 0; n != newN; n++) {
+		for (int row = 0; row != newM; row++) {
+			for (int col = 0; col != newN; col++) {
 				float sum = 0f;
 
-				for (int i = 0; i != _n; i++) {
-					sum += this.get(m, i) * matrix.get(i, n);
+				for (int i = 0; i != col; i++) {
+					sum += this.get(row, i) * matrix.get(i, col);
 				}
 
 				result[resultCell++] = sum;
 			}
+		}
 
 		return new MatrixFloat(newM, newN, result);
 	}
@@ -156,19 +156,19 @@ public class MatrixFloat implements IMatrix<Float> {
 			result[i] = _member[i] * value;
 		}
 
-		return new MatrixFloat(_m, _n, result);
+		return new MatrixFloat(rows, col, result);
 	}
 
 	@Override
 	public IMatrix<Float> getTransposed() {
 		final float[] result = new float[_area];
-		
+
 		int c = 0;
-		for (int n = 0; n != _n; n++)
-			for (int m = 0; m != _m; m++)
-				result[c++] = get(m, n);
-				
-		return new MatrixFloat(_n, _m, result);
+		for (int col = 0; col != this.getColumns(); col++)
+			for (int row = 0; row != this.getRows(); row++)
+				result[c++] = get(col, row);
+
+		return new MatrixFloat(this.getRows(), this.getColumns(), result);
 	}
 
 	/**
@@ -177,13 +177,13 @@ public class MatrixFloat implements IMatrix<Float> {
 	 * @return Inverse
 	 */
 	public IMatrix<Float> getInverse() {
-		if (_n == 2 && _m == 2)
+		if (col == 2 && rows == 2)
 			return getInverse2();
 
-		if (_n == 3 && _m == 3)
+		if (col == 3 && rows == 3)
 			return getInverse3();
 
-		if (_n == 4 && _m == 4)
+		if (col == 4 && rows == 4)
 			return getInverse4();
 
 		throw new RuntimeException("Inverse für diese Matrix nicht definiert.");
@@ -213,25 +213,7 @@ public class MatrixFloat implements IMatrix<Float> {
 		final float m32 = _member[c++];
 		final float m33 = _member[c++];
 
-		final float[] r = new float[] {
-		 m12 * m23 * m31 - m13 * m22 * m31 + m13 * m21 * m32 - m11 * m23 * m32 - m12 * m21 * m33 + m11 * m22 * m33,
-		 m03 * m22 * m31 - m02 * m23 * m31 - m03 * m21 * m32 + m01 * m23 * m32 + m02 * m21 * m33 - m01 * m22 * m33,
-		 m02 * m13 * m31 - m03 * m12 * m31 + m03 * m11 * m32 - m01 * m13 * m32 - m02 * m11 * m33 + m01 * m12 * m33,
-		 m03 * m12 * m21 - m02 * m13 * m21 - m03 * m11 * m22 + m01 * m13 * m22 + m02 * m11 * m23 - m01 * m12 * m23,
-		 m13 * m22 * m30 - m12 * m23 * m30 - m13 * m20 * m32 + m10 * m23 * m32 + m12 * m20 * m33 - m10 * m22 * m33,
-				m02 * m23 * m30 - m03 * m22 * m30 + m03 * m20 * m32 - m00 * m23 * m32 - m02 * m20 * m33 + m00 * m22
-						* m33,
-		 m03 * m12 * m30 - m02 * m13 * m30 - m03 * m10 * m32 + m00 * m13 * m32 + m02 * m10 * m33 - m00 * m12 * m33,
-		 m02 * m13 * m20 - m03 * m12 * m20 + m03 * m10 * m22 - m00 * m13 * m22 - m02 * m10 * m23 + m00 * m12 * m23,
-		 m11 * m23 * m30 - m13 * m21 * m30 + m13 * m20 * m31 - m10 * m23 * m31 - m11 * m20 * m33 + m10 * m21 * m33,
-		 m03 * m21 * m30 - m01 * m23 * m30 - m03 * m20 * m31 + m00 * m23 * m31 + m01 * m20 * m33 - m00 * m21 * m33,
-		 m01 * m13 * m30 - m03 * m11 * m30 + m03 * m10 * m31 - m00 * m13 * m31 - m01 * m10 * m33 + m00 * m11 * m33,
-				m03 * m11 * m20 - m01 * m13 * m20 - m03 * m10 * m21 + m00 * m13 * m21 + m01 * m10 * m23 - m00 * m11
-						* m23,
-		 m12 * m21 * m30 - m11 * m22 * m30 - m12 * m20 * m31 + m10 * m22 * m31 + m11 * m20 * m32 - m10 * m21 * m32,
-		 m01 * m22 * m30 - m02 * m21 * m30 + m02 * m20 * m31 - m00 * m22 * m31 - m01 * m20 * m32 + m00 * m21 * m32,
-		 m02 * m11 * m30 - m01 * m12 * m30 - m02 * m10 * m31 + m00 * m12 * m31 + m01 * m10 * m32 - m00 * m11 * m32,
-		 m01 * m12 * m20 - m02 * m11 * m20 + m02 * m10 * m21 - m00 * m12 * m21 - m01 * m10 * m22 + m00 * m11 * m22};
+		final float[] r = new float[] { m12 * m23 * m31 - m13 * m22 * m31 + m13 * m21 * m32 - m11 * m23 * m32 - m12 * m21 * m33 + m11 * m22 * m33, m03 * m22 * m31 - m02 * m23 * m31 - m03 * m21 * m32 + m01 * m23 * m32 + m02 * m21 * m33 - m01 * m22 * m33, m02 * m13 * m31 - m03 * m12 * m31 + m03 * m11 * m32 - m01 * m13 * m32 - m02 * m11 * m33 + m01 * m12 * m33, m03 * m12 * m21 - m02 * m13 * m21 - m03 * m11 * m22 + m01 * m13 * m22 + m02 * m11 * m23 - m01 * m12 * m23, m13 * m22 * m30 - m12 * m23 * m30 - m13 * m20 * m32 + m10 * m23 * m32 + m12 * m20 * m33 - m10 * m22 * m33, m02 * m23 * m30 - m03 * m22 * m30 + m03 * m20 * m32 - m00 * m23 * m32 - m02 * m20 * m33 + m00 * m22 * m33, m03 * m12 * m30 - m02 * m13 * m30 - m03 * m10 * m32 + m00 * m13 * m32 + m02 * m10 * m33 - m00 * m12 * m33, m02 * m13 * m20 - m03 * m12 * m20 + m03 * m10 * m22 - m00 * m13 * m22 - m02 * m10 * m23 + m00 * m12 * m23, m11 * m23 * m30 - m13 * m21 * m30 + m13 * m20 * m31 - m10 * m23 * m31 - m11 * m20 * m33 + m10 * m21 * m33, m03 * m21 * m30 - m01 * m23 * m30 - m03 * m20 * m31 + m00 * m23 * m31 + m01 * m20 * m33 - m00 * m21 * m33, m01 * m13 * m30 - m03 * m11 * m30 + m03 * m10 * m31 - m00 * m13 * m31 - m01 * m10 * m33 + m00 * m11 * m33, m03 * m11 * m20 - m01 * m13 * m20 - m03 * m10 * m21 + m00 * m13 * m21 + m01 * m10 * m23 - m00 * m11 * m23, m12 * m21 * m30 - m11 * m22 * m30 - m12 * m20 * m31 + m10 * m22 * m31 + m11 * m20 * m32 - m10 * m21 * m32, m01 * m22 * m30 - m02 * m21 * m30 + m02 * m20 * m31 - m00 * m22 * m31 - m01 * m20 * m32 + m00 * m21 * m32, m02 * m11 * m30 - m01 * m12 * m30 - m02 * m10 * m31 + m00 * m12 * m31 + m01 * m10 * m32 - m00 * m11 * m32, m01 * m12 * m20 - m02 * m11 * m20 + m02 * m10 * m21 - m00 * m12 * m21 - m01 * m10 * m22 + m00 * m11 * m22 };
 
 		return new SquareMatrixFloat(r).mult(1 / getDeterminant4());
 	}
@@ -242,22 +224,19 @@ public class MatrixFloat implements IMatrix<Float> {
 	 * @return Inverse
 	 */
 	private IMatrix<Float> getInverse3() {
-		final float det = getDeterminant3(); 
+		final float det = getDeterminant3();
 		final float[] m = _member;
-		final float a = m[0]; 
-		final float b = m[1]; 
-		final float c = m[2]; 
-		final float d = m[3]; 
-		final float e = m[4]; 
-		final float f = m[5]; 
-		final float g = m[6]; 
-		final float h = m[7]; 
+		final float a = m[0];
+		final float b = m[1];
+		final float c = m[2];
+		final float d = m[3];
+		final float e = m[4];
+		final float f = m[5];
+		final float g = m[6];
+		final float h = m[7];
 		final float i = m[8];
-		
-		return new SquareMatrixFloat(
-				e * i - f * h, c * h - b * i, b * f - c * e,
-				f * g - d * i, a * i - c * g, c * d - a * f,
-				d * h - e * g, b * g - a * h, a * e - b * d).mult(1f / det);
+
+		return new SquareMatrixFloat(e * i - f * h, c * h - b * i, b * f - c * e, f * g - d * i, a * i - c * g, c * d - a * f, d * h - e * g, b * g - a * h, a * e - b * d).mult(1f / det);
 	}
 
 	/**
@@ -269,9 +248,7 @@ public class MatrixFloat implements IMatrix<Float> {
 		final float det = getDeterminant2();
 
 		final float[] m = _member;
-		return new SquareMatrixFloat(
-				m[3], -m[1],
-				-m[2], m[0]).mult(1f / det);
+		return new SquareMatrixFloat(m[3], -m[1], -m[2], m[0]).mult(1f / det);
 	}
 
 	/**
@@ -280,13 +257,13 @@ public class MatrixFloat implements IMatrix<Float> {
 	 * @return Determinante
 	 */
 	public float getDeterminant() {
-		if (_n == 2 && _m == 2)
+		if (col == 2 && rows == 2)
 			return getDeterminant2();
 
-		if (_n == 3 && _m == 3)
+		if (col == 3 && rows == 3)
 			return getDeterminant3();
 
-		if (_n == 4 && _m == 4)
+		if (col == 4 && rows == 4)
 			return getDeterminant4();
 
 		throw new RuntimeException("Determinante für diese Matrix nicht definiert.");
@@ -316,12 +293,7 @@ public class MatrixFloat implements IMatrix<Float> {
 		final float m32 = _member[c++];
 		final float m33 = _member[c++];
 
-		return m03 * m12 * m21 * m30 - m02 * m13 * m21 * m30 - m03 * m11 * m22 * m30 + m01 * m13 * m22 * m30 +
-				m02 * m11 * m23 * m30 - m01 * m12 * m23 * m30 - m03 * m12 * m20 * m31 + m02 * m13 * m20 * m31 +
-				m03 * m10 * m22 * m31 - m00 * m13 * m22 * m31 - m02 * m10 * m23 * m31 + m00 * m12 * m23 * m31 +
-				m03 * m11 * m20 * m32 - m01 * m13 * m20 * m32 - m03 * m10 * m21 * m32 + m00 * m13 * m21 * m32 +
-				m01 * m10 * m23 * m32 - m00 * m11 * m23 * m32 - m02 * m11 * m20 * m33 + m01 * m12 * m20 * m33 +
-				m02 * m10 * m21 * m33 - m00 * m12 * m21 * m33 - m01 * m10 * m22 * m33 + m00 * m11 * m22 * m33;
+		return m03 * m12 * m21 * m30 - m02 * m13 * m21 * m30 - m03 * m11 * m22 * m30 + m01 * m13 * m22 * m30 + m02 * m11 * m23 * m30 - m01 * m12 * m23 * m30 - m03 * m12 * m20 * m31 + m02 * m13 * m20 * m31 + m03 * m10 * m22 * m31 - m00 * m13 * m22 * m31 - m02 * m10 * m23 * m31 + m00 * m12 * m23 * m31 + m03 * m11 * m20 * m32 - m01 * m13 * m20 * m32 - m03 * m10 * m21 * m32 + m00 * m13 * m21 * m32 + m01 * m10 * m23 * m32 - m00 * m11 * m23 * m32 - m02 * m11 * m20 * m33 + m01 * m12 * m20 * m33 + m02 * m10 * m21 * m33 - m00 * m12 * m21 * m33 - m01 * m10 * m22 * m33 + m00 * m11 * m22 * m33;
 	}
 
 	/**
@@ -359,16 +331,15 @@ public class MatrixFloat implements IMatrix<Float> {
 	private int generateHash() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + _m;
-		result = prime * result + _n;
+		result = prime * result + rows;
+		result = prime * result + col;
 		result = prime * result + Arrays.hashCode(_member);
 		return result;
 	}
 
 	@Override
 	public String toString() {
-		return "[member=" + Arrays.toString(_member) + ", _m=" + _m + ", _n=" + _n + ", area=" + _area
-				+ "]";
+		return "[member=" + Arrays.toString(_member) + ", _m=" + rows + ", _n=" + col + ", area=" + _area + "]";
 	}
 
 	@Override
@@ -385,9 +356,9 @@ public class MatrixFloat implements IMatrix<Float> {
 		if (!(obj instanceof MatrixFloat))
 			return false;
 		final MatrixFloat other = (MatrixFloat) obj;
-		if (_m != other._m)
+		if (rows != other.rows)
 			return false;
-		if (_n != other._n)
+		if (col != other.col)
 			return false;
 		if (!Arrays.equals(_member, other._member))
 			return false;
@@ -398,10 +369,10 @@ public class MatrixFloat implements IMatrix<Float> {
 	 * Gibt die Matrix in menschen lesbare Form wieder.
 	 */
 	public void print() {
-		for (int m = 0; m != _m; m++) {
-			for (int n = 0; n != _n; n++) {
+		for (int m = 0; m != rows; m++) {
+			for (int n = 0; n != col; n++) {
 				System.out.print(get(m, n));
-				if (n != _n - 1)
+				if (n != col - 1)
 					System.out.print(", ");
 			}
 

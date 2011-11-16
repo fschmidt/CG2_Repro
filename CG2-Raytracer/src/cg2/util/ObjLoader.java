@@ -45,13 +45,13 @@ public class ObjLoader {
 	}
 
 	private static void addFace(final String[] data, final ArrayList<Integer[]> faces) {
-		if (data.length != 2)
+		if (data.length > 4)
 			throw new RuntimeException("Datei hat falsches Format");
 
 		final Integer[] f = new Integer[3];
-		f[0] = Integer.parseInt(data[1]);
-		f[1] = Integer.parseInt(data[2]);
-		f[2] = Integer.parseInt(data[3]);
+		f[0] = Integer.parseInt(data[1].split("//")[0]) - 1;
+		f[1] = Integer.parseInt(data[2].split("//")[0]) - 1;
+		f[2] = Integer.parseInt(data[3].split("//")[0]) - 1;
 
 		faces.add(f);
 	}
@@ -70,4 +70,3 @@ public class ObjLoader {
 		vert.add(v);
 	}
 }
-
