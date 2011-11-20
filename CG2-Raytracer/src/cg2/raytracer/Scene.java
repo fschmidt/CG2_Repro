@@ -3,26 +3,32 @@ package cg2.raytracer;
 import java.util.List;
 
 import cg2.raytracer.model.IShapeColored;
+import cg2.raytracer.model.LightSource;
+import cg2.vecmath.Color;
 
 /**
  * Class representing a scene containing a list of objects and its camera.
  * 
  * @author Frank and Rico
- *
+ * 
  */
 public class Scene {
 	private List<IShapeColored> objects;
+	private List<LightSource> lights;
+	private Color ambientLight;
 	private final Camera camera;
 
 	/**
 	 * Creates a new scene with the given camera and objects.
 	 * 
-	 * @param objects The Objects in the scene
-	 * @param camera The camera
+	 * @param objects
+	 *            The Objects in the scene
+	 * @param camera
+	 *            The camera
 	 */
-	public Scene(final List<IShapeColored> objects, final Camera camera) {
-		super();
+	public Scene(final List<IShapeColored> objects, final List<LightSource> lights, final Color ambientLight, final Camera camera) {
 		this.objects = objects;
+		this.lights = lights;
 		this.camera = camera;
 	}
 
@@ -33,9 +39,23 @@ public class Scene {
 		return camera;
 	}
 
+	public List<IShapeColored> getObjects() {
+		return objects;
+	}
+
+	public List<LightSource> getLights() {
+		return lights;
+	}
+
+	public Color getAmbientLight() {
+		return ambientLight;
+	}
+
 	/**
-	 * @param ray The ray to intersect the scenes objects with
-	 * @return The Hit Object of the nearest Shape hit or null if no object was hit.
+	 * @param ray
+	 *            The ray to intersect the scenes objects with
+	 * @return The Hit Object of the nearest Shape hit or null if no object was
+	 *         hit.
 	 */
 	public IHitColoredDistance intersect(Ray ray) {
 		IHitColoredDistance nearest = null;

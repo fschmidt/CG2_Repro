@@ -42,8 +42,8 @@ public class Main {
 		// width, picture height)
 		Camera camera = new Camera(90f, 12, 9, nx, ny);
 
-		// instantiate scene an empty scene
-		Scene scene = new Scene(objects, camera);
+		// instantiate scene an empty scene with yellow ambient light source
+		Scene scene = new Scene(objects, null, yellow, camera);
 
 		// plane requires any point, a normal, and a color
 		Plane groundPlane = new Plane(new Vector(0f, -1.0f, 0f), new Vector(0f, 1f, 0f), dirt);
