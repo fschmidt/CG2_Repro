@@ -19,10 +19,12 @@ public class Raytracer implements Painter {
 	@Override
 	public Color pixelColorAt(int x, int y, int width, int height) {
 		Ray ray = scene.getCamera().getRay(x, y);
-		Hit hit = scene.intersect(ray);
+		Hit hit = scene.intersect(ray,0.0f,Float.POSITIVE_INFINITY);
+		
 
 		if (hit != null) {
-			return hit.getColor();
+			Color result = hit.getMaterial().shade(ray, hit, scene, 2);
+			return result;
 		}
 
 		return backgroundColor;

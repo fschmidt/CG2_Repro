@@ -13,9 +13,9 @@ import cg2.vecmath.Color;
  * 
  */
 public class Scene {
-	private List<IShapeColored> objects;
-	private List<LightSource> lights;
-	private Color ambientLight;
+	private final List<IShapeColored> objects;
+	private final List<LightSource> lights;
+	private final Color ambientLight;
 	private final Camera camera;
 
 	/**
@@ -30,6 +30,7 @@ public class Scene {
 		this.objects = objects;
 		this.lights = lights;
 		this.camera = camera;
+		this.ambientLight = ambientLight; 
 	}
 
 	/**
@@ -57,7 +58,7 @@ public class Scene {
 	 * @return The Hit Object of the nearest Shape hit or null if no object was
 	 *         hit.
 	 */
-	public Hit intersect(Ray ray) {
+	public Hit intersect(Ray ray, float tMin, float tMax) {
 		Hit nearest = null;
 
 		for (IShapeColored shape : objects) {

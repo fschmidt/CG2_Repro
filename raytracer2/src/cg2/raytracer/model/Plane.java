@@ -2,19 +2,18 @@ package cg2.raytracer.model;
 
 import cg2.raytracer.Hit;
 import cg2.raytracer.Ray;
-import cg2.vecmath.Color;
 import cg2.vecmath.Vector;
 
 public class Plane implements IShapeColored {
 	private final Vector x;
 	private final Vector n;
-	private final Color color;
+	private final Material material;
 
-	public Plane(Vector x, Vector n, Color color) {
+	public Plane(Vector x, Vector n, Material material) {
 		super();
 		this.x = x;
 		this.n = n;
-		this.color = color;
+		this.material = material;
 	}
 
 	public Vector getX() {
@@ -25,8 +24,8 @@ public class Plane implements IShapeColored {
 		return n;
 	}
 
-	public Color getColor() {
-		return color;
+	public Material getMaterial() {
+		return material;
 	}
 
 	@Override
@@ -42,11 +41,11 @@ public class Plane implements IShapeColored {
 		if (t < 0)
 			return null;
 
-		return new Hit(t, color);
+		return new Hit(t, material);
 	}
 
 	@Override
 	public String toString() {
-		return "Plane [x=" + x + ", n=" + n + ", color=" + color + "]";
+		return "Plane [x=" + x + ", n=" + n + ", color=" + material + "]";
 	}
 }

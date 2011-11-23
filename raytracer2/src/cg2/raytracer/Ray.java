@@ -18,7 +18,7 @@ public class Ray {
 	 * @param origin
 	 *            The origin of the ray
 	 */
-	private Ray(Vector gaze, Vector origin) {
+	public Ray(Vector gaze, Vector origin) {
 		super();
 
 		this.gaze = gaze.normalize();

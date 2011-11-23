@@ -12,7 +12,7 @@ public class LightSource {
 		this.color = color;
 	}
 
-	public Vector getPosition() {
+	public Vector getOrigin() {
 		return position;
 	}
 

@@ -1,6 +1,8 @@
 package cg2.raytracer;
 
+import cg2.raytracer.model.Material;
 import cg2.vecmath.Color;
+import cg2.vecmath.Vector;
 
 /**
  * Represents a Hit containing the color of the shape hit
@@ -10,25 +12,21 @@ import cg2.vecmath.Color;
  */
 public class Hit implements Comparable<Hit> {
 	private final float t;
-	private final Color c;
+	private final Material material; 
+	//private final Vector normal; // usw! 
 
-	public Hit(float t, Color c) {
+	public Hit(float t, Material material) {
 		super();
 		this.t = t;
-		this.c = c;
+		this.material = material;
 	}
 
 	public float getT() {
 		return t;
 	}
 
-	public Color getColor() {
-		return c;
-	}
-
-	@Override
-	public String toString() {
-		return "Hit [t=" + t + ", c=" + c + "]";
+	public Material getMaterial() {
+		return material;
 	}
 
 	@Override

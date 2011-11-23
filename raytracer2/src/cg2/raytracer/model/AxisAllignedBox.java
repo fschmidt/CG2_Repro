@@ -5,23 +5,22 @@ import java.util.List;
 
 import cg2.raytracer.Hit;
 import cg2.raytracer.Ray;
-import cg2.vecmath.Color;
 import cg2.vecmath.Vector;
 
 public class AxisAllignedBox implements IShapeColored {
 
 	protected final Vector pMin;
 	protected final Vector pMax;	
-	protected final Color c;
+	protected final Material material;
 
-	public Color getColor() {
-		return c;
+	public Material getMaterial() {
+		return material;
 	}
 
-	public AxisAllignedBox(Vector p, Vector q, Color c) {
+	public AxisAllignedBox(Vector p, Vector q, Material m) {
 		this.pMin = p;
 		this.pMax = q;
-		this.c = c;
+		this.material = m;
 
 		if (p.x > q.x || p.y > q.y || p.z > q.z) {
 			throw new IllegalArgumentException();
@@ -77,7 +76,7 @@ public class AxisAllignedBox implements IShapeColored {
 		Vector d = ray.getOrigin().add(ray.getGaze().mult(tMax));
 
 		if (d.x >= pMin.x - epsilon && d.y >= pMin.y - epsilon && d.z >= pMin.z - epsilon && d.x <= pMax.x + epsilon && d.y <= pMax.y + epsilon && d.z <= pMax.z + epsilon) {
-			return new Hit(tMax, getColor());
+			return new Hit(tMax, getMaterial());
 		} else {
 			return null;
 		}

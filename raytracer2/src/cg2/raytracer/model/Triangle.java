@@ -2,21 +2,24 @@ package cg2.raytracer.model;
 
 import cg2.raytracer.Hit;
 import cg2.raytracer.Ray;
-import cg2.vecmath.Color;
 import cg2.vecmath.Vector;
 
 public class Triangle implements IShapeColored {
 	private final Vector p0;
 	private final Vector p1;
 	private final Vector p2;
-	private final Color c;
+	private final Material material;
 
-	public Triangle(Vector p0, Vector p1, Vector p2, Color c) {
+	public Triangle(Vector p0, Vector p1, Vector p2, Material material) {
 		super();
 		this.p0 = p0;
 		this.p1 = p1;
 		this.p2 = p2;
-		this.c = c;
+		this.material = material;
+	}
+
+	public Material getMaterial() {
+		return material;
 	}
 
 	@Override
@@ -37,7 +40,7 @@ public class Triangle implements IShapeColored {
 		float u = tvu.y;
 		float v = tvu.z;
 
-		Hit hit = new Hit(t, c);
+		Hit hit = new Hit(t, material);
 
 		if (u > 0 && v > 0 && u + v < 1.0f) {
 			return hit;
@@ -45,9 +48,4 @@ public class Triangle implements IShapeColored {
 
 		return null;
 	}
-
-	public Color getColor() {
-		return c;
-	}
-
 }
