@@ -1,6 +1,5 @@
 package cg2.raytracer.model;
 
-
 import cg2.raytracer.HitColoredDistance;
 import cg2.raytracer.IHitColoredDistance;
 import cg2.raytracer.IHitDistance;
@@ -16,21 +15,21 @@ public class AxisAllignedBoxColored extends AxisAllignedBox implements IShapeCol
 	}
 
 	public AxisAllignedBoxColored(Vector p, Vector q, Color c) {
-		super(p, q);  
+		super(p, q);
 		this.c = c;
 
 		if (p.x > q.x || p.y > q.y || p.z > q.z) {
 			throw new IllegalArgumentException();
 		}
 	}
-	
+
 	@Override
 	public IHitColoredDistance getHit(Ray ray) {
 		IHitDistance hit = super.getHit(ray);
-		
-		if(hit == null) 
-			return null; 
-		
-		return new HitColoredDistance(hit.getT(), c); 
+
+		if (hit == null)
+			return null;
+
+		return new HitColoredDistance(hit.getT(), c);
 	}
 }

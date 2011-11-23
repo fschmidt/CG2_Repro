@@ -8,9 +8,8 @@ import cg2.raytracer.Camera;
 import cg2.raytracer.Scene;
 import cg2.raytracer.model.AxisAllignedBoxColored;
 import cg2.raytracer.model.IShapeColored;
-import cg2.raytracer.model.Model;
 import cg2.raytracer.model.Plane;
-import cg2.raytracer.model.Sphere;
+import cg2.raytracer.model.SphereColored;
 import cg2.raytracer.model.Triangle;
 import cg2.util.ObjData;
 import cg2.vecmath.Color;
@@ -52,10 +51,10 @@ public class Main {
 		Plane rightPlane = new Plane(new Vector(10f, 0f, -1f), new Vector(-12f, 0f, 1f), yellow);
 
 		// sphere requires specification of center, radius, and color
-		Sphere redSphere = new Sphere(new Vector(1.0f, 0.0f, -5.0f), 1.3f, red);
-		Sphere blueSphere = new Sphere(new Vector(-4.5f, 1.0f, -7.0f), 1.0f, blue);
-		Sphere greenSphere = new Sphere(new Vector(-1.0f, 0.0f, -4.0f), 1.5f, green);
-		Sphere sphereFoo = new Sphere(new Vector(9.0f, -1.0f, -11.5f), 2.5f, red.darken(0.4f));
+		SphereColored redSphere = new SphereColored(new Vector(1.0f, 0.0f, -5.0f), 1.3f, red);
+		SphereColored blueSphere = new SphereColored(new Vector(-4.5f, 1.0f, -7.0f), 1.0f, blue);
+		SphereColored greenSphere = new SphereColored(new Vector(-1.0f, 0.0f, -4.0f), 1.5f, green);
+		SphereColored sphereFoo = new SphereColored(new Vector(9.0f, -1.0f, -11.5f), 2.5f, red.darken(0.4f));
 
 		// an axis aligned box requires only two points
 		AxisAllignedBoxColored box = new AxisAllignedBoxColored(new Vector(2, 1, -12), new Vector(6, 5, -10), boxColor);
@@ -96,8 +95,9 @@ public class Main {
 		IMatrix<Float> transp = mesh.getTransposed();
 		IMatrix<Float> trans = transp.mult(transformation);
 
-		Model model = new Model(trans, faces);
+		return null;
+		// Model model = new Model(trans, faces);
 
-		return model;
+		// return model;
 	}
 }

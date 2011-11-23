@@ -23,7 +23,7 @@ public class MatrixFloat implements IMatrix<Float> {
 	/**
 	 * Die Anzahl Spalten
 	 * */
-	final protected int col;
+	final protected int columns;
 
 	/**
 	 * Die Fläche (n*m)
@@ -49,7 +49,7 @@ public class MatrixFloat implements IMatrix<Float> {
 	 */
 	public MatrixFloat(final int m, final int n, final float... e) {
 		this.rows = m;
-		this.col = n;
+		this.columns = n;
 		this._area = n * m;
 
 		this._member = e;
@@ -60,13 +60,13 @@ public class MatrixFloat implements IMatrix<Float> {
 			throw new IllegalArgumentException("Übergebene Abmessungen stimmen nicht mit Elementen überein.");
 	}
 
-	public MatrixFloat(final IMatrix<Float> matrix) {
-		this(((MatrixFloat) matrix).rows, ((MatrixFloat) matrix).col, ((MatrixFloat) matrix)._member);
+	public MatrixFloat(final MatrixFloat matrix) {
+		this(matrix.rows, matrix.columns, matrix._member);
 	}
 
 	@Override
 	public int getColumns() {
-		return col;
+		return columns;
 	}
 
 	@Override
@@ -75,77 +75,73 @@ public class MatrixFloat implements IMatrix<Float> {
 	}
 
 	@Override
-	public Float get(final int m, final int n) {
-		if (n < 0 || m < 0 || m >= this.rows || n >= this.col)
+	public Float get(final int row, final int col) {
+		if (col < 0 || row < 0 || row >= this.rows || col >= this.columns)
 			throw new IllegalArgumentException("row oder column sind außerhalb des Wertebereiches.");
 
-		return _member[n + m * this.col];
+		return _member[col + row * this.columns];
 	}
 
 	@Override
 	public IMatrix<Float> add(final IMatrix<Float> matrix) {
 		checkNull(matrix);
 
-		if (this.rows != matrix.getColumns() || this.col != matrix.getRows())
+		if (this.rows != matrix.getRows() || this.columns != matrix.getColumns())
 			throw new IllegalArgumentException("Es lassen sich nur Matritzen mit gleicher Abmessung addieren.");
 
 		final float[] result = new float[_area];
 
 		int i = 0;
-		for (int m = 0; m != rows; m++)
-			for (int n = 0; n != col; n++) {
-				result[i] = _member[i] + matrix.get(m, n);
+		for (int row = 0; row != rows; row++) {
+			for (int col = 0; col != columns; col++) {
+				result[i] = this.get(row, col) + matrix.get(row, col);
 				i++;
 			}
+		}
 
-		return new MatrixFloat(rows, col, result);
-	}
-
-	@Override
-	public IMatrix<Float> sub(final IMatrix<Float> matrix) {
-		checkNull(matrix);
-
-		if (this.rows != matrix.getColumns() || this.col != matrix.getRows())
-			throw new IllegalArgumentException("Es lassen sich nur Matritzen mit gleicher Abmessung subtrahieren.");
-
-		final float[] result = new float[_area];
-
-		int i = 0;
-		for (int m = 0; m != rows; m++)
-			for (int n = 0; n != col; n++) {
-				result[i] = _member[i] - matrix.get(m, n);
-				i++;
-			}
-
-		return new MatrixFloat(rows, col, result);
+		return new MatrixFloat(rows, columns, result);
 	}
 
 	@Override
 	public IMatrix<Float> mult(final IMatrix<Float> matrix) {
 		checkNull(matrix);
 
-		if (this.getColumns() != matrix.getRows())
+		if (this.getRows() != matrix.getColumns()) {
 			throw new IllegalArgumentException("Matrixmultiplikation geht nur mit Matritzen nach dem Schema m x p * p x n.");
-
-		int resultCell = 0;
-		final int newM = this.rows;
-		final int newN = matrix.getColumns();
-
-		final float[] result = new float[newM * newN];
-
-		for (int row = 0; row != newM; row++) {
-			for (int col = 0; col != newN; col++) {
-				float sum = 0f;
-
-				for (int i = 0; i != col; i++) {
-					sum += this.get(row, i) * matrix.get(i, col);
-				}
-
-				result[resultCell++] = sum;
-			}
 		}
 
-		return new MatrixFloat(newM, newN, result);
+		int i = 0;
+		int newRows = this.getColumns();
+		int newColumns = this.getRows();
+		float[] result = new float[newColumns * newRows];
+
+		for (int row = 0; row != newRows; row++) {
+			for (int column = 0; column != newColumns; column++) {
+
+			}
+		}
+		throw new RuntimeException();
+		/*
+		 * if (this.getColu != matrix.getRows()) throw new
+		 * IllegalArgumentException(
+		 * "Matrixmultiplikation geht nur mit Matritzen nach dem Schema m x p * p x n."
+		 * );
+		 * 
+		 * int resultCell = 0; final int newM = this.rows; final int newN =
+		 * matrix.getColumns();
+		 * 
+		 * final float[] result = new float[newM * newN];
+		 * 
+		 * for (int row = 0; row != newM; row++) { for (int col = 0; col !=
+		 * newN; col++) { float sum = 0f;
+		 * 
+		 * for (int i = 0; i != col; i++) { sum += this.get(row, i) *
+		 * matrix.get(i, col); }
+		 * 
+		 * result[resultCell++] = sum; } }
+		 * 
+		 * return new MatrixFloat(newM, newN, result);
+		 */
 	}
 
 	@Override
@@ -156,7 +152,12 @@ public class MatrixFloat implements IMatrix<Float> {
 			result[i] = _member[i] * value;
 		}
 
-		return new MatrixFloat(rows, col, result);
+		return new MatrixFloat(rows, columns, result);
+	}
+
+	@Override
+	public IMatrix<Float> sub(final IMatrix<Float> matrix) {
+		return this.add(matrix.mult(-1f));
 	}
 
 	@Override
@@ -168,7 +169,7 @@ public class MatrixFloat implements IMatrix<Float> {
 			for (int row = 0; row != this.getRows(); row++)
 				result[c++] = get(col, row);
 
-		return new MatrixFloat(this.getRows(), this.getColumns(), result);
+		return new MatrixFloat(this.getColumns(), this.getRows(), result);
 	}
 
 	/**
@@ -177,13 +178,13 @@ public class MatrixFloat implements IMatrix<Float> {
 	 * @return Inverse
 	 */
 	public IMatrix<Float> getInverse() {
-		if (col == 2 && rows == 2)
+		if (columns == 2 && rows == 2)
 			return getInverse2();
 
-		if (col == 3 && rows == 3)
+		if (columns == 3 && rows == 3)
 			return getInverse3();
 
-		if (col == 4 && rows == 4)
+		if (columns == 4 && rows == 4)
 			return getInverse4();
 
 		throw new RuntimeException("Inverse für diese Matrix nicht definiert.");
@@ -257,13 +258,13 @@ public class MatrixFloat implements IMatrix<Float> {
 	 * @return Determinante
 	 */
 	public float getDeterminant() {
-		if (col == 2 && rows == 2)
+		if (columns == 2 && rows == 2)
 			return getDeterminant2();
 
-		if (col == 3 && rows == 3)
+		if (columns == 3 && rows == 3)
 			return getDeterminant3();
 
-		if (col == 4 && rows == 4)
+		if (columns == 4 && rows == 4)
 			return getDeterminant4();
 
 		throw new RuntimeException("Determinante für diese Matrix nicht definiert.");
@@ -332,14 +333,14 @@ public class MatrixFloat implements IMatrix<Float> {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + rows;
-		result = prime * result + col;
+		result = prime * result + columns;
 		result = prime * result + Arrays.hashCode(_member);
 		return result;
 	}
 
 	@Override
 	public String toString() {
-		return "[member=" + Arrays.toString(_member) + ", _m=" + rows + ", _n=" + col + ", area=" + _area + "]";
+		return "[member=" + Arrays.toString(_member) + ", _m=" + rows + ", _n=" + columns + ", area=" + _area + "]";
 	}
 
 	@Override
@@ -358,7 +359,7 @@ public class MatrixFloat implements IMatrix<Float> {
 		final MatrixFloat other = (MatrixFloat) obj;
 		if (rows != other.rows)
 			return false;
-		if (col != other.col)
+		if (columns != other.columns)
 			return false;
 		if (!Arrays.equals(_member, other._member))
 			return false;
@@ -370,9 +371,9 @@ public class MatrixFloat implements IMatrix<Float> {
 	 */
 	public void print() {
 		for (int m = 0; m != rows; m++) {
-			for (int n = 0; n != col; n++) {
+			for (int n = 0; n != columns; n++) {
 				System.out.print(get(m, n));
-				if (n != col - 1)
+				if (n != columns - 1)
 					System.out.print(", ");
 			}
 

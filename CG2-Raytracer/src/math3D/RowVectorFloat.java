@@ -9,7 +9,7 @@ public class RowVectorFloat extends MatrixFloat implements IRowVector<Float> {
 	}
 
 	public RowVectorFloat(final IMatrix<Float> matrix) {
-		super(((MatrixFloat) matrix).rows, ((MatrixFloat) matrix).col, ((MatrixFloat) matrix)._member);
+		super(((MatrixFloat) matrix).rows, ((MatrixFloat) matrix).columns, ((MatrixFloat) matrix)._member);
 	}
 
 	@Override
