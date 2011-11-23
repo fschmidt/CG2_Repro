@@ -9,7 +9,7 @@ public class RowVectorFloat extends MatrixFloat implements IRowVector<Float> {
 	}
 
 	public RowVectorFloat(final IMatrix<Float> matrix) {
-		super(((MatrixFloat) matrix)._m, ((MatrixFloat) matrix)._n, ((MatrixFloat) matrix)._member);
+		super(((MatrixFloat) matrix).rows, ((MatrixFloat) matrix).col, ((MatrixFloat) matrix)._member);
 	}
 
 	@Override
@@ -20,8 +20,7 @@ public class RowVectorFloat extends MatrixFloat implements IRowVector<Float> {
 		if (this._area == 2 || this._area == 3)
 			return this.mult(vector.getTransposed()).get(0, 0);
 
-		throw new IllegalArgumentException(
-				"Skalarprodukt kann nur von zwei- oder dreidimensional)en Vektoren berechnet werden.");
+		throw new IllegalArgumentException("Skalarprodukt kann nur von zwei- oder dreidimensional)en Vektoren berechnet werden.");
 	}
 
 	@Override
@@ -47,16 +46,12 @@ public class RowVectorFloat extends MatrixFloat implements IRowVector<Float> {
 	}
 
 	private IRowVector<Float> calcCrossProduct4(final IRowVector<Float> a, final IRowVector<Float> b) {
-		//Wir gehen davon aus, dass die vierte Komponente W ist. 
+		// Wir gehen davon aus, dass die vierte Komponente W ist.
 		final float w = a.get(0, 3);
 		if (w != b.get(0, 3))
 			throw new IllegalArgumentException("Beide Vektoren braucehn die gleiche W Komponente");
 
-		return new RowVectorFloat(
-				a.get(0, 1) * b.get(0, 2) - a.get(0, 2) * b.get(0, 1),
-				a.get(0, 2) * b.get(0, 0) - a.get(0, 0) * b.get(0, 2),
-				a.get(0, 0) * b.get(0, 1) - a.get(0, 1) * b.get(0, 0),
-				w);
+		return new RowVectorFloat(a.get(0, 1) * b.get(0, 2) - a.get(0, 2) * b.get(0, 1), a.get(0, 2) * b.get(0, 0) - a.get(0, 0) * b.get(0, 2), a.get(0, 0) * b.get(0, 1) - a.get(0, 1) * b.get(0, 0), w);
 	}
 
 	/**
@@ -65,11 +60,7 @@ public class RowVectorFloat extends MatrixFloat implements IRowVector<Float> {
 	 * @return
 	 * @throws IllegalArgumentException
 	 */
-	private IRowVector<Float> calcCrossProduct3(final IRowVector<Float> a, final IRowVector<Float> b)
-			throws IllegalArgumentException {
-		return new RowVectorFloat(
-				a.get(0, 1) * b.get(0, 2) - a.get(0, 2) * b.get(0, 1),
-				a.get(0, 2) * b.get(0, 0) - a.get(0, 0) * b.get(0, 2),
-				a.get(0, 0) * b.get(0, 1) - a.get(0, 1) * b.get(0, 0));
+	private IRowVector<Float> calcCrossProduct3(final IRowVector<Float> a, final IRowVector<Float> b) throws IllegalArgumentException {
+		return new RowVectorFloat(a.get(0, 1) * b.get(0, 2) - a.get(0, 2) * b.get(0, 1), a.get(0, 2) * b.get(0, 0) - a.get(0, 0) * b.get(0, 2), a.get(0, 0) * b.get(0, 1) - a.get(0, 1) * b.get(0, 0));
 	}
 }

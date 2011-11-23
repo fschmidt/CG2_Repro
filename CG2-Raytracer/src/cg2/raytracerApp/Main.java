@@ -20,6 +20,8 @@ import de.bht.fb6.cg1.math.IMatrix;
 public class Main {
 
 	public static void main(String[] args) {
+		System.out.println("Starte Raytracer.");
+
 		String path = System.getProperty("user.home");
 		String filename = path + "/" + "raytracer.png";
 
@@ -63,7 +65,7 @@ public class Main {
 
 		Triangle triangle2 = new Triangle(new Vector(-7f, 5f, -10f), new Vector(-5f, 5f, -10f), new Vector(-6f, 7f, -10f), blue.darken(0.8f));
 
-		IShapeColored cube = loadObj("testdata/cube.obj");
+		// IShapeColored cube = loadObj("testdata/cube.obj");
 
 		objects.add(groundPlane);
 		objects.add(rightPlane);
@@ -74,10 +76,12 @@ public class Main {
 		objects.add(box);
 		objects.add(triangle);
 		objects.add(triangle2);
-		objects.add(cube);
+		// objects.add(cube);
 
 		new ImageGenerator(new Raytracer(scene, background), nx, ny, filename, "png");
 		ImageGenerator.showImage(filename);
+
+		System.out.println("Raytracer Ende.");
 	}
 
 	private static IShapeColored loadObj(String file) {

@@ -27,11 +27,11 @@ public class SquareMatrixFloat extends MatrixFloat implements ISquareMatrix<Floa
 	public boolean isIdentityMatrix() {
 		for (int i = 0; i != size; i++) {
 			if (i / size == i % size) {
-				//Diagonale
+				// Diagonale
 				if (this._member[i] != 1f)
 					return false;
 			} else {
-				//Nicht Diagonale
+				// Nicht Diagonale
 				if (this._member[i] != 0f)
 					return false;
 			}
