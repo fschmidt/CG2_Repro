@@ -42,25 +42,39 @@ public class Material {
 
 		Color result = kAmbient.modulate(scene.getAmbientLight());
 
-		// if( viewer not in the back of the surface )
-
-		// for each light in scene.getLightSources() do
 		for (LightSource light : scene.getLights()) {
-			// if( light not in the back of the surface )
+
+			Vector hitPoint = ray.getOrigin().add(
+					ray.getGaze().mult(hit.getT()));
+			
+			Vector s = light.getOrigin().sub(hitPoint);
+			Vector r = ((hit.getNormal().mult(2 * (hit.getNormal().dot(s)))).sub(s)).normalize();
 
 			// Ray shadowRay = <generate shadow ray>;
-			Vector originShadowRay = ray.getOrigin().add(
-					ray.getGaze().mult(hit.getT()));
-			Vector directionShadowRay = light.getOrigin().sub(originShadowRay);
+			Vector directionShadowRay = light.getOrigin().sub(hitPoint);
 
-			Ray shadowray = new Ray(directionShadowRay, originShadowRay);
+			Ray shadowray = new Ray(directionShadowRay, hitPoint);
 			Vector betweenLightSourceAndHitPoint = light.getOrigin().sub(
 					ray.getOrigin().add(ray.getGaze().mult(hit.getT())));
 			float tmax = betweenLightSourceAndHitPoint.length();
-			
+
 			if (scene.intersect(shadowray, epsilon, tmax) == null) {
-				result.modulate(kDiffuse.modulate(light.getColor().modulate(hit.getNormal().dot(
-								light.getOrigin().sub(directionShadowRay)))));
+				final Color red = new Color(1, 0, 0);
+				float ns = hit.getNormal().dot(directionShadowRay.normalize());
+				if (ns > 0) {
+					if (red.equals(getkDiffuse())) {
+						System.out.println("ambient: " + result);
+						System.out.println("diffuse : "
+								+ kDiffuse.modulate(light.getColor().modulate(
+										ns)));
+						System.out.println("Final: "
+								+ result.add(kDiffuse.modulate(light
+										.getColor().modulate(ns))));
+						System.out.println("LightColor: "+ light.getColor());
+
+					}
+					result.add(kDiffuse.modulate(light.getColor().modulate(ns)));
+				}
 			}
 			// if(null==scene.intersect(shadowray, originShadowRay.length(),
 			// light.getOrigin().length()))
