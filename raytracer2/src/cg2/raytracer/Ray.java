@@ -48,4 +48,8 @@ public class Ray {
 	public String toString() {
 		return "Ray [direction=" + gaze + ", origin=" + origin + "]";
 	}
+
+	public Vector getPoint(float t) {
+		return origin.add(gaze.mult(t));
+	}
 }

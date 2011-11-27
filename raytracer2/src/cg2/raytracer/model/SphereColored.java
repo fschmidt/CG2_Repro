@@ -50,7 +50,7 @@ public class SphereColored implements IShapeColored {
 
 		if (underSqrt == 0) {
 			// TODO change null parameters
-			return new Hit(minusPHalf, null, null);
+			return new Hit(minusPHalf, null, null, this);
 		}
 
 		float sqrt = (float) Math.sqrt(underSqrt);
@@ -59,15 +59,21 @@ public class SphereColored implements IShapeColored {
 
 		// TODO change null parameters
 		if (t1 > 0 && t2 > 0)
-			return t1 > t2 ? new Hit(t2, null, null) : new Hit(t1, null, null);
+			return t1 > t2 ? new Hit(t2, null, null, this) : new Hit(t1, null, null, this);
 
 		// TODO change null parameters
 		if (t1 <= 0 && t2 > 0)
-			return new Hit(t2, null, null);
+			return new Hit(t2, null, null, this);
 
 		if (t1 > 0 && t2 <= 0)
-			return new Hit(t1, null, null);
+			return new Hit(t1, null, null, this);
 
+		return null;
+	}
+
+	@Override
+	public Material getMaterial() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 }

@@ -1,5 +1,6 @@
 package cg2.raytracer;
 
+import cg2.raytracer.model.IShapeColored;
 import cg2.raytracer.model.Material;
 import cg2.vecmath.Vector;
 
@@ -13,13 +14,15 @@ public class Hit implements Comparable<Hit> {
 	private final float t;
 	private final Material material;
 	private final Vector normal;
+	private final IShapeColored shape;
 	// private final Vector normal; // usw!
 
-	public Hit(float t, Material material, Vector normal) {
+	public Hit(float t, Material material, Vector normal, IShapeColored shape) {
 		super();
 		this.t = t;
 		this.material = material;
 		this.normal = normal;
+		this.shape = shape;
 	}
 
 	public float getT() {
@@ -48,5 +51,9 @@ public class Hit implements Comparable<Hit> {
 
 	public Vector getNormal() {
 		return normal;
+	}
+
+	public IShapeColored getShape() {
+		return shape;
 	}
 }

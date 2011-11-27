@@ -77,7 +77,7 @@ public class AxisAllignedBox implements IShapeColored {
 		Vector d = ray.getOrigin().add(ray.getGaze().mult(tMax));
 
 		if (null != planeMax && d.x >= pMin.x - epsilon && d.y >= pMin.y - epsilon && d.z >= pMin.z - epsilon && d.x <= pMax.x + epsilon && d.y <= pMax.y + epsilon && d.z <= pMax.z + epsilon) {
-			return new Hit(tMax, getMaterial(), planeMax.getN());
+			return new Hit(tMax, getMaterial(), planeMax.getN(), this);
 		} else {
 			return null;
 		}

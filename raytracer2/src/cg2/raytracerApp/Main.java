@@ -38,20 +38,21 @@ public class Main {
 		final Color dirt = new Color(0.55f, 0.46f, 0.4f);
 		final Color boxColor = new Color(0, 0.8f, 1.0f);
 		final Color background = new Color(0, 0, 0);
-		final Color white = new Color(1, 1, 1);
+		final Color white = new Color(0.8f, 0.8f, 0.8f);
+		final float phongExp = 12f;
 
 		lights.add(new LightSource(new Vector(-5.0f, 10.0f, 10.0f), white));
 
 		final Material redMaterial = new Material(ambientRed, red,
-				white, 64);
+				white,red, phongExp);
 		final Material yellowMaterial = new Material(yellow,
-				yellow, white, 64);
+				yellow, white, yellow, phongExp);
 		final Material greenMaterial = new Material(green, green,
-				white, 64);
+				white, green,  phongExp);
 		final Material boxMaterial = new Material(boxColor, new Color(0, 0, 0),
-				white, 64);
+				white, boxColor,  phongExp);
 		final Material blueMaterial = new Material(blue, new Color(0, 0, 0),
-				white, 64);
+				white, blue,phongExp);
 
 		// camera (field of view, viewPlane width, viewPlane height, picture
 		// width, picture height)
@@ -63,7 +64,7 @@ public class Main {
 
 		// plane requires any point, a normal, and a color
 		Plane groundPlane = new Plane(new Vector(0f, -1.0f, 0f), new Vector(0f,
-				1f, 0f), new Material(dirt, new Color(0, 0, 0), blue, 64));
+				1f, 0f), new Material(dirt, new Color(0, 0, 0), blue,dirt, phongExp));
 		Plane rightPlane = new Plane(new Vector(10f, 0f, -1f), new Vector(-12f,
 				0f, 1f), yellowMaterial);
 
@@ -91,12 +92,12 @@ public class Main {
 		// IShapeColored cube = loadObj("testdata/cube.obj");
 
 		objects.add(groundPlane);
-		objects.add(rightPlane);
+//		objects.add(rightPlane);
 		objects.add(redSphere);
-		objects.add(blueSphere);
-		objects.add(greenSphere);
+//		objects.add(blueSphere);
+//		objects.add(greenSphere);
 		// objects.add(sphereFoo);
-		objects.add(box);
+//		objects.add(box);
 		// objects.add(triangle);
 		// objects.add(triangle2);
 		// // objects.add(cube);

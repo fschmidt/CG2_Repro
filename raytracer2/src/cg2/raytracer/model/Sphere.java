@@ -48,7 +48,7 @@ public class Sphere implements IShapeColored {
 		float minusPHalf = -pHalf;
 
 		if (underSqrt == 0) {
-			return new Hit(minusPHalf, material, getNormal(ray, minusPHalf));
+			return new Hit(minusPHalf, material, getNormal(ray, minusPHalf), this);
 		}
 
 		float sqrt = (float) Math.sqrt(underSqrt);
@@ -57,14 +57,14 @@ public class Sphere implements IShapeColored {
 
 		if (t1 > 0 && t2 > 0)
 			return t1 > t2
-					? new Hit(t2, material, getNormal(ray, t2))
-					: new Hit(t1, material, getNormal(ray, t1));
+					? new Hit(t2, material, getNormal(ray, t2), this)
+					: new Hit(t1, material, getNormal(ray, t1), this);
 
 		if (t1 <= 0 && t2 > 0)
-			return new Hit(t2, material, getNormal(ray, t2));
+			return new Hit(t2, material, getNormal(ray, t2), this);
 
 		if (t1 > 0 && t2 <= 0)
-			return new Hit(t1, material, getNormal(ray, t1));
+			return new Hit(t1, material, getNormal(ray, t1), this);
 
 		return null;
 

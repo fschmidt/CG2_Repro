@@ -10,13 +10,15 @@ public class Material {
 	private final Color kAmbient;
 	private final Color kDiffuse;
 	private final Color kSpecular;
+	private final Color kRefract;
 	private final float phongExponent;
 
-	public Material(Color kAmbient, Color kDiffuse, Color kSpecular,
+	public Material(Color kAmbient, Color kDiffuse, Color kSpecular, Color kRefract,
 			float phongExponent) {
 		this.kAmbient = kAmbient;
 		this.kDiffuse = kDiffuse;
 		this.kSpecular = kSpecular;
+		this.kRefract = kRefract;
 		this.phongExponent = phongExponent;
 	}
 
@@ -61,7 +63,7 @@ public class Material {
 			if (scene.intersect(shadowray, epsilon, tmax) == null) {
 				final Color red = new Color(1, 0, 0);
 				float ns = hit.getNormal().dot(directionShadowRay.normalize());
-				if (ns > 0) {
+//				if (ns > 0) {
 					if (red.equals(getkDiffuse())) {
 						System.out.println("ambient: " + result);
 						System.out.println("diffuse : "
@@ -73,8 +75,8 @@ public class Material {
 						System.out.println("LightColor: "+ light.getColor());
 
 					}
-					result.add(kDiffuse.modulate(light.getColor().modulate(ns)));
-				}
+					result.add(kDiffuse.modulate(light.getColor().modulate(hit.getNormal().dot(r))));
+//				}
 			}
 			// if(null==scene.intersect(shadowray, originShadowRay.length(),
 			// light.getOrigin().length()))

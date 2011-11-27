@@ -23,7 +23,7 @@ public class Raytracer implements Painter {
 		
 
 		if (hit != null) {
-			Color result = hit.getMaterial().shade(ray, hit, scene, 2);
+			Color result = hit.getMaterial().shade(ray, hit, scene, 3);
 			return result;
 		}
 

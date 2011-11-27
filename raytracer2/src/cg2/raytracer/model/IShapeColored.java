@@ -11,4 +11,5 @@ public interface IShapeColored {
 	 * @return null if Ray doesn't hit shape.
 	 */
 	Hit getHit(final Ray ray);
+	Material getMaterial();
 }
