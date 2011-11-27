@@ -49,21 +49,24 @@ public class SphereColored implements IShapeColored {
 		float minusPHalf = -pHalf;
 
 		if (underSqrt == 0) {
-			return new Hit(minusPHalf, color);
+			// TODO change null parameters
+			return new Hit(minusPHalf, null, null);
 		}
 
 		float sqrt = (float) Math.sqrt(underSqrt);
 		float t1 = minusPHalf + sqrt;
 		float t2 = minusPHalf - sqrt;
 
+		// TODO change null parameters
 		if (t1 > 0 && t2 > 0)
-			return t1 > t2 ? new Hit(t2, color) : new Hit(t1, color);
+			return t1 > t2 ? new Hit(t2, null, null) : new Hit(t1, null, null);
 
+		// TODO change null parameters
 		if (t1 <= 0 && t2 > 0)
-			return new Hit(t2, color);
+			return new Hit(t2, null, null);
 
 		if (t1 > 0 && t2 <= 0)
-			return new Hit(t1, color);
+			return new Hit(t1, null, null);
 
 		return null;
 	}

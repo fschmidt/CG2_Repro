@@ -7,8 +7,8 @@ import cg2.vecmath.Vector;
 public class Sphere implements IShapeColored {
 	private final Vector origin;
 	private final float radius;
-	private final Material material; 
-	
+	private final Material material;
+
 	public Sphere(Vector origin, float radius, Material material) {
 		super();
 		this.origin = origin;
@@ -48,7 +48,7 @@ public class Sphere implements IShapeColored {
 		float minusPHalf = -pHalf;
 
 		if (underSqrt == 0) {
-			return new Hit(minusPHalf, material);
+			return new Hit(minusPHalf, material, getNormal(ray, minusPHalf));
 		}
 
 		float sqrt = (float) Math.sqrt(underSqrt);
@@ -56,14 +56,23 @@ public class Sphere implements IShapeColored {
 		float t2 = minusPHalf - sqrt;
 
 		if (t1 > 0 && t2 > 0)
-			return t1 > t2 ? new Hit(t2, material) : new Hit(t1, material);
+			return t1 > t2
+					? new Hit(t2, material, getNormal(ray, t2))
+					: new Hit(t1, material, getNormal(ray, t1));
 
 		if (t1 <= 0 && t2 > 0)
-			return new Hit(t2, material);
+			return new Hit(t2, material, getNormal(ray, t2));
 
 		if (t1 > 0 && t2 <= 0)
-			return new Hit(t1, material);
+			return new Hit(t1, material, getNormal(ray, t1));
 
 		return null;
+
+	}
+
+	public Vector getNormal(Ray ray, float t) {
+		Vector hitPoint = ray.getOrigin().add(ray.getGaze().mult(t));
+		Vector normal = hitPoint.sub(origin).normalize();
+		return normal;
 	}
 }

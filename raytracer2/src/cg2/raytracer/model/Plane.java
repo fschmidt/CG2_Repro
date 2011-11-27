@@ -41,7 +41,7 @@ public class Plane implements IShapeColored {
 		if (t < 0)
 			return null;
 
-		return new Hit(t, material);
+		return new Hit(t, material, n);
 	}
 
 	@Override

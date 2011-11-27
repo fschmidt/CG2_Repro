@@ -12,7 +12,8 @@ public class Material {
 	private final Color kSpecular;
 	private final float phongExponent;
 
-	public Material(Color kAmbient, Color kDiffuse, Color kSpecular, float phongExponent) {
+	public Material(Color kAmbient, Color kDiffuse, Color kSpecular,
+			float phongExponent) {
 		this.kAmbient = kAmbient;
 		this.kDiffuse = kDiffuse;
 		this.kSpecular = kSpecular;
@@ -37,22 +38,34 @@ public class Material {
 
 	public Color shade(Ray ray, Hit hit, Scene scene, int depth) {
 
+		float epsilon = 0.002f;
+
 		Color result = kAmbient.modulate(scene.getAmbientLight());
-		
+
 		// if( viewer not in the back of the surface )
-		
+
 		// for each light in scene.getLightSources() do
-		for(LightSource light : scene.getLights()) {
+		for (LightSource light : scene.getLights()) {
 			// if( light not in the back of the surface )
-			
+
 			// Ray shadowRay = <generate shadow ray>;
-			Vector originShadowRay = ray.getOrigin().add(ray.getGaze().mult(hit.getT())); 
+			Vector originShadowRay = ray.getOrigin().add(
+					ray.getGaze().mult(hit.getT()));
 			Vector directionShadowRay = light.getOrigin().sub(originShadowRay);
+
 			Ray shadowray = new Ray(directionShadowRay, originShadowRay);
-			// if( <intersect scene with shadowRay> == null )
-			//if(null==scene.intersect(shadowray, originShadowRay.length(), light.getOrigin().length()))
-			// result += kDiffuse * dot(n,s) * <light color> ;
+			Vector betweenLightSourceAndHitPoint = light.getOrigin().sub(
+					ray.getOrigin().add(ray.getGaze().mult(hit.getT())));
+			float tmax = betweenLightSourceAndHitPoint.length();
 			
+			if (scene.intersect(shadowray, epsilon, tmax) == null) {
+				result.modulate(kDiffuse.modulate(light.getColor().modulate(hit.getNormal().dot(
+								light.getOrigin().sub(directionShadowRay)))));
+			}
+			// if(null==scene.intersect(shadowray, originShadowRay.length(),
+			// light.getOrigin().length()))
+			// result += kDiffuse * dot(n,s) * <light color> ;
+
 		}
 		// if( angle to ight source not extremely small )
 		// result += kSpec * dot(v,r)^a * <light color> ;

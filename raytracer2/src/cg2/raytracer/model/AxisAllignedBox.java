@@ -61,22 +61,23 @@ public class AxisAllignedBox implements IShapeColored {
 		}
 
 		float tMax = Float.MIN_VALUE;
+		Plane planeMax = null;
 
 		for (Plane plane : planesWhichPointToMe) {
 			Hit hit = plane.getHit(ray);
-
 			if (hit != null) {
 				float t = hit.getT();
 				if (t > tMax) {
 					tMax = t;
+					planeMax = plane;
 				}
 			}
 		}
 
 		Vector d = ray.getOrigin().add(ray.getGaze().mult(tMax));
 
-		if (d.x >= pMin.x - epsilon && d.y >= pMin.y - epsilon && d.z >= pMin.z - epsilon && d.x <= pMax.x + epsilon && d.y <= pMax.y + epsilon && d.z <= pMax.z + epsilon) {
-			return new Hit(tMax, getMaterial());
+		if (null != planeMax && d.x >= pMin.x - epsilon && d.y >= pMin.y - epsilon && d.z >= pMin.z - epsilon && d.x <= pMax.x + epsilon && d.y <= pMax.y + epsilon && d.z <= pMax.z + epsilon) {
+			return new Hit(tMax, getMaterial(), planeMax.getN());
 		} else {
 			return null;
 		}

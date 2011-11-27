@@ -40,7 +40,7 @@ public class Triangle implements IShapeColored {
 		float u = tvu.y;
 		float v = tvu.z;
 
-		Hit hit = new Hit(t, material);
+		Hit hit = new Hit(t, material, p0.cross(p1));
 
 		if (u > 0 && v > 0 && u + v < 1.0f) {
 			return hit;
