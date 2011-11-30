@@ -10,8 +10,9 @@
  * $State: Exp $
  */
 
-package cg2.vecmath;
+package vecmath;
 
+import java.lang.Math;
 
 /**
  * A 4-element quaternion represented by float precision floating point x,y,z,w

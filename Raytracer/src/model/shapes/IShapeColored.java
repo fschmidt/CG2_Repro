@@ -1,7 +1,9 @@
-package cg2.raytracer.model;
+package model.shapes;
 
-import cg2.raytracer.Hit;
-import cg2.raytracer.Ray;
+import model.Hit;
+import model.Material;
+import model.Ray;
+
 
 public interface IShapeColored {
 
