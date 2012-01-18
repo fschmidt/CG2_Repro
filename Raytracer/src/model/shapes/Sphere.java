@@ -74,6 +74,6 @@ public class Sphere implements IShapeColored {
 	}
 
 	public Vector getNormal(Ray ray, float t) {
-		return ray.getPoint(t).sub(origin).normalize();
+		return (ray.getPoint(t).sub(origin)).normalize();
 	}
 }

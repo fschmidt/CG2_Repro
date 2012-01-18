@@ -38,7 +38,7 @@ public class Main {
 
 		final Color green = new Color(0, 0.2f, 0);
 		final Color ambientGreen = new Color(0, 0.1f, 0);
-		final Color refractGreen = new Color(0, 0.3f, 0);
+		final Color refractGreen = new Color(0.8f, 0.8f, 0.8f);
 
 		final Color blue = new Color(0, 0, 0.8f);
 		final Color ambientBlue = new Color(0, 0, 0.5f);
@@ -55,13 +55,13 @@ public class Main {
 		final float phongExp = 300f;
 
 		final Material redMaterial = new Material(ambientRed, red, white,
-				white, refractRed, phongExp, Material.DIAMOND);
+				white, refractRed, phongExp, Material.SOLID);
 
 		final Material greenMaterial = new Material(ambientGreen, green, white,
-				white, refractGreen, phongExp, Material.AIR);
+				white, refractGreen, phongExp, Material.AIR+0.00001f);
 
 		final Material blueMaterial = new Material(ambientBlue, blue, white,
-				white, refractBlue, phongExp, Material.WATER);
+				white, refractBlue, phongExp, Material.DIAMOND);
 
 		final Material yellowMaterial = new Material(ambientYellow, yellow,
 				white, reflectYellow, reflectYellow, phongExp);
@@ -78,13 +78,13 @@ public class Main {
 				planeMaterial);
 
 		// sphere requires specification of center, radius, and color
-		Sphere redSphere2 = new Sphere(new Vector(-1.0f, -1.0f, -15.0f), 1.3f,
+		Sphere redSphere2 = new Sphere(new Vector(-1.0f, -1.0f, -20.0f), 1.3f,
 				redMaterial);
 		Sphere redSphere = new Sphere(new Vector(4.0f, -1.0f, -7.0f), 1.3f,
 				redMaterial);
 		Sphere blueSphere = new Sphere(new Vector(-3.5f, -1.0f, -6.0f), 1.0f,
 				blueMaterial);
-		Sphere greenSphere = new Sphere(new Vector(-1.0f, 0.0f, -8.0f), 1.5f,
+		Sphere greenSphere = new Sphere(new Vector(-1.0f, 1.5f, -8.0f), 1.5f,
 				greenMaterial);
 
 		// an axis aligned box requires only two points
@@ -129,5 +129,6 @@ public class Main {
 		ImageGenerator.showImage(filename);
 
 		System.out.println("Raytracer Ende.");
+		System.out.println(Material.hitcount);
 	}
 }

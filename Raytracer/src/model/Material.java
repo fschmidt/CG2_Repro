@@ -12,6 +12,7 @@ public class Material {
 	public static float GLAS = 1.500f;
 	public static float DIAMOND = 2.419f;
 	public static float SOLID = Float.POSITIVE_INFINITY;
+	public static float hitcount;
 
 	private final Color kAmbient;
 	private final Color kDiffuse;
@@ -66,13 +67,13 @@ public class Material {
 		Color refraction = new Color(0, 0, 0);
 		Vector s;
 		Vector r;
-		Vector n = hit.getNormal();
+		Vector normal = hit.getNormal();
 		Vector v = ray.getDirection().mult(-1.0f);
 
 		for (LightSource light : scene.getLights()) {
 
 			s = (light.getOrigin().sub(point)).normalize();
-			r = ((n.mult(2 * (n.dot(s)))).sub(s)).normalize();
+			r = ((normal.mult(2 * (normal.dot(s)))).sub(s)).normalize();
 
 			float cosNS = hit.getNormal().dot(s);
 			float cosRV = r.dot(v);
@@ -122,53 +123,80 @@ public class Material {
 		}
 
 		// refraction
-		Hit refHit = null;
-		float n2 = refractionIndex;
-		if (n1 != Material.AIR && n1 != Material.SOLID) {
-			n2 = Material.AIR;
-		}
+		if (refractionIndex != Material.SOLID) {
+			Hit refHit = null;
 
-		float ratio = n1 / n2;
-		float ratioN1N2_pow2 = (float) Math.pow(n1 / n2, 2);
+			float n2;
 
-		float cosOi = v.dot(n);
-		float sinOi = 1 - cosOi;
-		float sin2Oi = ratioN1N2_pow2 * (float) Math.pow(sinOi, 2);
-		float sin2Ot = ratioN1N2_pow2 * (sin2Oi);
-		float sqrt = (float) Math.sqrt(1 - sin2Ot);
+			float cosOi = v.dot(normal);
 
-		if (depth > 0 && n2 != Material.SOLID && sqrt >= 0 && sin2Ot <= 1) {
+			if (cosOi > 0) {
+				n1 = Material.AIR;
+				n2 = refractionIndex;
+				hitcount++;
+			} else {
+				normal = normal.mult(-1);
+				n2 = Material.AIR;
+				n1 = refractionIndex;
+				// hitcount--;
+			}
 
-			if (!(n1 > n2)) {
+			float ratio = n1 / n2;
+			float ratioN1N2_pow2 = (float) Math.pow(n1 / n2, 2);
+
+			float sinOi = 1 - cosOi;
+			float sin2Oi = (float) Math.pow(sinOi, 2);
+			float sin2Ot = ratioN1N2_pow2 * (sin2Oi);
+			float sqrt = (float) Math.sqrt(1 - sin2Ot);
+
+			if (depth > 0 && sqrt >= 0 && sin2Ot <= 1) {
+				// if (!(n1 > n2)) {
 				Vector t1 = ray.getDirection().mult(ratio);
-				Vector t2 = n.mult((ratio * cosOi) - (sqrt));
+				Vector t2 = normal.mult((ratio * cosOi) - (sqrt));
 				Vector t = t1.add(t2);
 
 				Ray refractionRay = new Ray(t.normalize(), point);
+
+				// float scalar = refractionRay.getDirection().dot(
+				// ray.getDirection());
+
 				Hit refractionHit = scene.intersect(refractionRay,
 						Constants.EPSILON, Float.POSITIVE_INFINITY);
+
 				if (refractionHit != null
 						&& refractionHit.getT() > Constants.EPSILON) {
+
+					if (refractionHit.getMaterial().getRefractionIndex() == Material.SOLID) {
+						// System.out.println("Rote Kugel getroffen");
+					} else if (refractionHit.getMaterial().getRefractionIndex() < Material.AIR + 1f) {
+						// System.out.println("Grüne Kugel getroffen");
+						// System.out.println(point.z
+						// - (refractionRay.getPoint(refractionHit
+						// .getT()).z));
+					}
+
 					refraction = refractionHit.getMaterial().shade(
 							refractionRay, refractionHit, scene, depth - 1, n2);
 					refHit = refractionHit;
 				}
-
+				// }
 			}
 
-		}
+			if (refHit != null) {
+				float r0 = (float) Math.pow((n1 - n2) / (n1 + n2), 2);
+				float R = (float) (r0 + (1 - r0) * (Math.pow(1 - sin2Oi, 5)));
+				float T = 1 - R;
 
-		if (refHit != null) {
-			float r0 = (float) Math.pow((n2 - n1) / (n2 + n1), 2);
-			float R = (float) (r0 + (1 - r0) * (Math.pow(1 - sin2Oi, 5)));
-			float T = 1 - R;
-
-			refraction = refraction.modulate(T);
-			reflection = reflection.modulate(R);
+				refraction = refraction.modulate(T);
+				reflection = reflection.modulate(R);
+			}
 		}
 
 		return result.add(diffuse).add(specular)
-				.add(reflection.modulate(kReflect))
-				.add(refraction.modulate(kRefract));
+		// .add(reflection.modulate(kReflect))
+				.add(refraction);
+	}
+	public float getRefractionIndex() {
+		return refractionIndex;
 	}
 }
