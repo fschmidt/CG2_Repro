@@ -55,6 +55,7 @@
     <!-- fragment shader source code -->
     <script id="frag_shader" type="x-shader/x-fragment">
         precision mediump float;
+		#define PI 3.141592653
         
         varying vec4  ecPosition; 
         varying vec3  ecNormal; 
@@ -90,6 +91,8 @@
 		struct EarthAttributes {
 			float drawLightsAtNight;
 			float drawClouds;
+			float drawAurora;
+			float time; 
 		};
 		uniform EarthAttributes earthAttributes;
 
@@ -101,6 +104,31 @@
             
         } ;
         uniform DirectionalLightSource light;
+
+
+/* -------- RICO -------- */
+
+float f(float x) {
+	return (sin(x * 2.0 * PI ) + 1.0) / 2.0;
+}
+
+float q(vec2 p) {
+	float s = (f(p.x + 0.25)) / 5.0; 
+	
+	float c = smoothstep(0.9, 1.0, 1.0 - abs(p.y - s));  
+	return c; 
+}
+
+vec3 comp_aurora(vec2 p, float time) {
+	vec3 c1 = q( vec2(p.x, p.y / 0.4) + vec2(0.0, -0.5)) * vec3(1.0, 1.0, 1.0); 	
+	vec3 c2 = q( vec2(p.x, p.y) + vec2(time, -0.2)) * vec3(.1, .1, 1.0); 	
+	vec3 c3 = q( vec2(p.x, p.y / 0.4) + vec2(time / 2.0, -0.5)) * vec3(.10, 1.0, .10); 
+	
+	return c1+c2+c3; 
+}
+
+/* -------- RICO ENDE -------- */
+
 
         /* 
             Calculate surface color based on Blinn-Phong illumination model.
@@ -146,6 +174,8 @@
         	// some values used for rendering
         	float drawLights 	= earthAttributes.drawLightsAtNight;
         	float drawClouds 	= earthAttributes.drawClouds;
+			float drawAurora    = earthAttributes.drawAurora; 
+			float time          = earthAttributes.time;      
         	float height 		= texture2D(bathymetryTexture, texCoord).r;
         	float shininess 	= material.shininess;// * (1.0 - pow(height, 0.25));
         	vec3 kSpecular 		= material.kSpecular.rgb;// * (1.0 - pow(height, 0.25));
@@ -153,9 +183,16 @@
 			
         	
         	// colors used for rendering
+			vec3 aurora     = comp_aurora(vec2(texCoord.x, abs(texCoord.y * 3.0)), time); 
         	vec3 dayColor 	= texture2D(daylightTexture, texCoord).rgb;
-			vec3 nightColor = texture2D(nightTexture, texCoord).rgb * drawLights;
-			vec3 clouds 	= texture2D(cloudTexture, texCoord).rgb * drawClouds;
+			vec3 nightColor = vec3(0.0); 
+			vec3 clouds 	= vec3(0.0); 
+
+			if(drawLights != 0.0)
+				nightColor = texture2D(nightTexture, texCoord).rgb * drawLights;
+
+			if(drawClouds != 0.0) 
+				clouds = texture2D(cloudTexture, texCoord).rgb * drawClouds;
 			
 			float cloudFactor	= clouds.r;
 			
@@ -193,8 +230,9 @@
 			} else {
 				specular = vec3(0,0,0);
 			}
+
             // return sum of all contributions
-            return (ambient + diffuse + specular)*(1.0 - cloudFactor) + (clouds * cloudFactor * 1.5) * ndotl;
+            return aurora + (ambient + diffuse + specular )*(1.0 - cloudFactor) + (clouds * cloudFactor * 1.5) * ndotl;
         }
         
         
@@ -257,6 +295,9 @@
         <input name="showClouds" type="checkbox" onclick="updateAnimationParams()" >
         Wolkenschichten
       <p>
+        <input name="showRico1" type="checkbox" onclick="updateAnimationParams()" >
+        Drogen! 
+     <p>
         <input name="animateSun" type="checkbox" checked onclick="startStopSunAnimation()" >
         Sonne wandert mit  
         <input name="sunSpeed" type="text" size="3" maxlength="3" value="20" 

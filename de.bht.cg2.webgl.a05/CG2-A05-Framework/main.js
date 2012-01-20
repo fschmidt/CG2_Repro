@@ -139,6 +139,13 @@ drawScene = function() {
 	} else {
 		this.earthAttributes.drawClouds = 0.0;
 	}
+
+	var date = new Date(); 
+	var time = date.getSeconds() + date.getMilliseconds() / 1000.0; 
+
+	this.earthAttributes.drawAurora = 1.0; 
+	this.earthAttributes.time  = time; 
+
 	// activate the textures for the earth
 	this.daylightTexture.makeActive(program, "daylightTexture", 0);
 	this.nightTexture.makeActive(program, "nightTexture", 1);
