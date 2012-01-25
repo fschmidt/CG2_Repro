@@ -19,6 +19,9 @@
  - numVertices is the number of vertices this object consists of
  */
 VertexBasedShape = function(gl, primitiveType, numVertices) {
+	
+	// transformation applied to the entire object 
+    this.modelTranslation = mat4.identity();
 
 	// arrays in which to store vertex buffers
 	this.vertexBuffers = new Array();

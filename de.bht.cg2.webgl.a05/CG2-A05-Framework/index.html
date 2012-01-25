@@ -29,6 +29,7 @@
         attribute vec3 vertexPosition; 
         attribute vec3 vertexNormal;
 		attribute vec2 vertexTexCoord;
+		attribute vec4 modelTranslation;
 
         uniform mat4 modelViewMatrix;
         uniform mat4 projectionMatrix;
@@ -91,6 +92,7 @@
 		struct EarthAttributes {
 			float drawLightsAtNight;
 			float drawClouds;
+			float drawAtmosphere;
 			float drawAurora;
 			float time; 
 		};
@@ -173,28 +175,20 @@ vec3 comp_aurora(vec2 p, float time) {
         	
         	// some values used for rendering
         	float drawLights 	= earthAttributes.drawLightsAtNight;
-        	float drawClouds 	= earthAttributes.drawClouds;
 			float drawAurora    = earthAttributes.drawAurora; 
 			float time          = earthAttributes.time;      
         	float height 		= texture2D(bathymetryTexture, texCoord).r;
         	float shininess 	= material.shininess;// * (1.0 - pow(height, 0.25));
         	vec3 kSpecular 		= material.kSpecular.rgb;// * (1.0 - pow(height, 0.25));
+        	
+        	float cloudFactor = texture2D(cloudTexture, texCoord).r;
 			
 			
         	
         	// colors used for rendering
-			vec3 aurora     = comp_aurora(vec2(texCoord.x, abs(texCoord.y * 3.0)), time); 
+			vec3 aurora     = comp_aurora(vec2(texCoord.x, abs(texCoord.y * 3.0)), time) * drawAurora; 
         	vec3 dayColor 	= texture2D(daylightTexture, texCoord).rgb;
-			vec3 nightColor = vec3(0.0); 
-			vec3 clouds 	= vec3(0.0); 
-
-			if(drawLights != 0.0)
-				nightColor = texture2D(nightTexture, texCoord).rgb * drawLights;
-
-			if(drawClouds != 0.0) 
-				clouds = texture2D(cloudTexture, texCoord).rgb * drawClouds;
-			
-			float cloudFactor	= clouds.r;
+			vec3 nightColor = texture2D(nightTexture, texCoord).rgb * drawLights;
 			
             // check viewing direction - is this back-facing?
             float ndotv = dot(n, v);
@@ -207,13 +201,13 @@ vec3 comp_aurora(vec2 p, float time) {
         	// cos of angle between light and surface. 0 = light behind surface
             float ndotl = max( dot(n, -l), 0.0);
         	
-        	vec3 aPart = dayColor * ndotl + nightColor * (1.0 - ndotl);
+        	vec3 aPart = dayColor * ndotl + nightColor * (1.0 - ndotl) * (1.0-cloudFactor);
         	
             // ambient part
             vec3 ambient = aPart * ambientLight;
                
             // diffuse contribution
-            vec3 diffuse = dayColor * light.color * ndotl;
+            vec3 diffuse = (dayColor - nightColor) * light.color * ndotl;
             
             // half way vector between light and viewer
             vec3 h = normalize(v - l);
@@ -221,20 +215,90 @@ vec3 comp_aurora(vec2 p, float time) {
             // angle between half way vector and surface normal
             float ndoth = dot(n, h);
 
-			vec3 specular;
+			vec3 specular = kSpecular * light.color * pow(ndoth, shininess);
             // specular contribution
-			if(height > 0.1){
-				if(cloudFactor < 0.01){ 
-            		specular = (kSpecular * light.color * pow(ndoth, shininess));
-				}
-			} else {
-				specular = vec3(0,0,0);
+			if(height < 0.1){
+           		specular = specular * 0.1;
 			}
+			
+            // return sum of all contributions
+            return aurora + ambient + diffuse + specular;
+        }
+		
+		vec3 illumAtmosphere(vec3 pos, vec3 n, vec3 v) {
+			
+			// check viewing direction - is this back-facing?
+            float ndotv = dot(n,v);
+            if(ndotv<0.02) 
+                return vec3(0,0,0); // backface
+
+            // vector from light to current point
+            vec3 l = light.direction;
+            
+            // cos of angle between light and surface. 0 = light behind surface
+            float ndotl = max( dot(n,-l), 0.0); 
+            
+            vec3 atmosphere = (1.0 - dot(n, v)) * vec3(0.0,0.0,0.8);
+            
+            // ambient part
+            vec3 ambient = (1.0 - ndotv) * atmosphere * ambientLight / 1.5;
+
+            // diffuse contribution
+            vec3 diffuse = atmosphere * light.color * ndotl;
+            
+            // half way vector between light and viewer
+            vec3 h = normalize(v-l);
+
+            // angle between half way vector and surface normal
+            float ndoth = dot(n,h);
+            
+
 
             // return sum of all contributions
-            return aurora + (ambient + diffuse + specular )*(1.0 - cloudFactor) + (clouds * cloudFactor * 1.5) * ndotl;
-        }
+			return (diffuse + ambient) * earthAttributes.drawAtmosphere;
+		}
         
+        vec3 illumCLouds(vec3 pos, vec3 n, vec3 v) {
+        	
+        	// cloudcolor
+        	vec3 cloudColor = texture2D(cloudTexture, texCoord).rgb;
+        	
+			// check viewing direction - is this back-facing?
+            float ndotv = dot(n,v);
+            if(ndotv<0.02) 
+                return vec3(0,0,0); // backface
+
+            // vector from light to current point
+            vec3 l = light.direction;
+            
+            // cos of angle between light and surface. 0 = light behind surface
+            float ndotl = max( dot(n,-l), 0.0);
+            
+            // ambient part
+            vec3 ambient = cloudColor * ambientLight;
+
+            // diffuse contribution
+            vec3 diffuse = cloudColor * light.color * ndotl;
+
+            // return sum of all contributions
+			return (diffuse + ambient);
+		}
+		
+		float getCloudsAlpha(vec3 pos, vec3 n, vec3 v){
+			
+			// vector from light to current point
+            vec3 l = light.direction;
+            
+            // cos of angle between light and surface. 0 = light behind surface
+            float ndotl = max( dot(n,-l), 0.0);
+            
+			return (texture2D(cloudTexture, texCoord).r * ndotl);
+			
+		}
+		
+		float getAtmosphereAlpha(vec3 n, vec3 v){
+			return(1.0 - dot(n, v));
+		}
         
        void main() { 
         
@@ -251,14 +315,24 @@ vec3 comp_aurora(vec2 p, float time) {
             
             // calculate color using Blinn-Phong function
             vec3 color;
+			vec4 fragColor;
             if(material.drawWithPhong == 1){
             	color = blinnPhong( ecPosition.xyz, normalEC, viewdirEC );
-            } else {
+				fragColor = vec4(color, 1.0);
+            } else if (material.drawWithPhong == 0){
             	color = illumWorld( ecPosition.xyz, normalEC, viewdirEC );
-            }
-            //vec3 color = blinnPhong( ecPosition.xyz, normalEC, viewdirEC );
-
-            gl_FragColor = vec4(color, 1.0);
+				fragColor = vec4(color, 1.0);
+            } else if (material.drawWithPhong == 2){
+				float alpha = getCloudsAlpha( ecPosition.xyz, normalEC, viewdirEC );
+				vec3 cloud = illumCLouds( ecPosition.xyz, normalEC, viewdirEC );
+				
+				fragColor = vec4(cloud, alpha);
+			} else {
+				float atmoAlpha = getAtmosphereAlpha(normalEC, viewdirEC);
+				vec3 atmo = illumAtmosphere( ecPosition.xyz, normalEC, viewdirEC );
+				fragColor = vec4(atmo, atmoAlpha);
+			}
+            gl_FragColor = fragColor;
                                 
         }    
     </script>
@@ -294,6 +368,9 @@ vec3 comp_aurora(vec2 p, float time) {
       <p>
         <input name="showClouds" type="checkbox" onclick="updateAnimationParams()" >
         Wolkenschichten
+      <p>
+      	<input name="showAtmosphere" type="checkbox" onclick="updateAnimationParams()" >
+        Atmosphere
       <p>
         <input name="showRico1" type="checkbox" onclick="updateAnimationParams()" >
         Drogen! 

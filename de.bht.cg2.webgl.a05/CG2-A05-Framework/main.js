@@ -60,6 +60,9 @@ initScene = function() {
 	var program = this.getProgram();
 	var gl = this.getGL();
 
+	gl.enable(gl.BLEND);
+	gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
 	// this texture will be loaded automatically through the UI
 	this.daylightTexture = new Texture2D(gl, "textures/month01.jpg", this);
 	this.nightTexture = new Texture2D(gl, "textures/earth_at_night_2048.jpg", this);
@@ -85,6 +88,11 @@ initScene = function() {
 
 	// Sphere to symbolize the earth
 	this.earth = new Sphere(gl, 0.5, 100, 100, [1, 0, 0], [1, 0, 0]);
+
+	// Sphere for the outer atmosphere
+	this.cloudSphere = new Sphere(gl, 0.52, 100, 100, [1, 0, 0], [1, 0, 0]);
+	
+	this.atmoSphere = new Sphere(gl, 0.53, 100, 100, [1, 0, 0], [1, 0, 0]);
 }
 /*
  drawScene()
@@ -133,18 +141,28 @@ drawScene = function() {
 	} else {
 		this.earthAttributes.drawLightsAtNight = 0.0;
 	}
-	
-	if(this.showClouds) {
+
+	var date = new Date();
+	var time = date.getSeconds() + date.getMilliseconds() / 1000.0;
+
+	if(theScene.drawAurora) {
+		this.earthAttributes.drawAurora = 1.0;
+	} else {
+		this.earthAttributes.drawAurora = 0.0;
+	}
+
+	if(theScene.drawClouds) {
 		this.earthAttributes.drawClouds = 1.0;
 	} else {
 		this.earthAttributes.drawClouds = 0.0;
 	}
+	if(theScene.showAtmosphere) {
+		this.earthAttributes.drawAtmosphere = 1.0;
+	} else {
+		this.earthAttributes.drawAtmosphere = 0.0;
+	}
 
-	var date = new Date(); 
-	var time = date.getSeconds() + date.getMilliseconds() / 1000.0; 
-
-	this.earthAttributes.drawAurora = 1.0; 
-	this.earthAttributes.time  = time; 
+	this.earthAttributes.time = time;
 
 	// activate the textures for the earth
 	this.daylightTexture.makeActive(program, "daylightTexture", 0);
@@ -165,6 +183,30 @@ drawScene = function() {
 	this.earthAttributes.setUniforms(program);
 
 	this.earth.shape.draw(program);
+
+	if(this.showClouds ) {
+		f = this.earthAttributes.drawWithPhong;
+
+		this.earthMaterial.drawWithPhong = 2.0;
+
+		this.earthMaterial.setUniforms(program, mv);
+
+		this.cloudSphere.shape.draw(program);
+
+		this.earthMaterial.drawWithPhong = f;
+	}
+	
+	if(this.showAtmosphere) {
+		f = this.earthAttributes.drawWithPhong;
+
+		this.earthMaterial.drawWithPhong = 3.0;
+
+		this.earthMaterial.setUniforms(program, mv);
+
+		this.atmoSphere.shape.draw(program);
+
+		this.earthMaterial.drawWithPhong = f;
+	}
 
 }
 setEarthTexture = function() {
@@ -226,6 +268,12 @@ updateAnimationParams = function() {
 
 	// use clouds?
 	theScene.showClouds = f.elements["showClouds"].checked == true;
+
+	// use Aurora?
+	theScene.drawAurora = f.elements["showRico1"].checked == true;
+
+	// show atmosphere?
+	theScene.showAtmosphere = f.elements["showAtmosphere"].checked == true;
 
 	// sunlight simulation speed
 	var sunSpeed = parseInt(f.elements["sunSpeed"].value);
