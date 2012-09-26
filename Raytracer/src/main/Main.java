@@ -18,7 +18,7 @@ import vecmath.Vector;
 public class Main {
 
 	public static void main(String[] args) {
-		System.out.println("Starte Raytracer.");
+		System.out.println("Raytracer start");
 
 		String path = System.getProperty("user.home");
 		String filename = path + "/" + "raytracer.png";
@@ -128,7 +128,8 @@ public class Main {
 				"png");
 		ImageGenerator.showImage(filename);
 
-		System.out.println("Raytracer Ende.");
-		System.out.println(Material.hitcount);
+		System.out.println("Raytracer end");
+		System.out.printf("You can find the file at %s%n", filename);
+		//System.out.println(Material.hitcount);
 	}
 }

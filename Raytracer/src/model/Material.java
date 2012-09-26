@@ -17,8 +17,6 @@ public class Material {
 	private final Color kAmbient;
 	private final Color kDiffuse;
 	private final Color kSpecular;
-	private final Color kRefract;
-	private final Color kReflect;
 	private final float phongExponent;
 	private final float refractionIndex;
 
@@ -27,8 +25,6 @@ public class Material {
 		this.kAmbient = kAmbient;
 		this.kDiffuse = kDiffuse;
 		this.kSpecular = kSpecular;
-		this.kReflect = kReflect;
-		this.kRefract = kRefract;
 		this.phongExponent = phongExponent;
 		this.refractionIndex = Material.SOLID;
 	}
@@ -40,8 +36,6 @@ public class Material {
 		this.kAmbient = kAmbient;
 		this.kDiffuse = kDiffuse;
 		this.kSpecular = kSpecular;
-		this.kReflect = kReflect;
-		this.kRefract = kRefract;
 		this.phongExponent = phongExponent;
 		this.refractionIndex = refractionIndex;
 	}
@@ -169,7 +163,7 @@ public class Material {
 					if (refractionHit.getMaterial().getRefractionIndex() == Material.SOLID) {
 						// System.out.println("Rote Kugel getroffen");
 					} else if (refractionHit.getMaterial().getRefractionIndex() < Material.AIR + 1f) {
-						// System.out.println("Grüne Kugel getroffen");
+						// System.out.println("Grï¿½ne Kugel getroffen");
 						// System.out.println(point.z
 						// - (refractionRay.getPoint(refractionHit
 						// .getT()).z));

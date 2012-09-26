@@ -4,7 +4,6 @@ import java.util.List;
 
 import main.Constants;
 import model.shapes.IShapeColored;
-import model.shapes.Plane;
 import vecmath.Color;
 
 /**
